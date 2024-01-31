@@ -1,22 +1,15 @@
 # Bachelor Project
 
-
 ## Ideas
 
 ### LLM
+
 https://www.youtube.com/watch?v=UU1WVnMk4E8&list=WL&index=4
-
-
-
 
 ### Web Development (Focus on Databases and Backend Development)
 
 1. Research and implement security measures to protect against common web vulnerabilities like SQL injection or cross-site scripting.
 2. Portfolio Website: Build a professional portfolio website to showcase your work and skills. Add interactive elements and responsive design.
-
-
-
-
 
 ### Machine Learning
 
@@ -26,6 +19,4 @@ https://www.youtube.com/watch?v=UU1WVnMk4E8&list=WL&index=4
 
 ### Mobile App Development
 
-
 ### Game Development
-
