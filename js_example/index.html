@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>JS Example</h1>
+    <p id="demo">THIS IS THE CONTENT IN THE BEGINNING</p>
+    <button id="change_content_button" onclick="changeContent()">Change content</button>
+    <button onclick="changeContentBack()">Change content back</button>
+    <button onclick="openNewWindow()">Open new window</button>
+
+
+
+    
+    <form id="apiForm" onsubmit="fetchDataFromAPILink(); return false;">
+        <input type="text" id="api_link" placeholder="Enter an API link to fetch">
+        <input type="submit" value="Submit">
+    </form>
+
+
+    <script src="index.js"></script>
+</body>

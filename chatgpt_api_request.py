@@ -3,7 +3,7 @@ import json
 
 def send_message(message):
     api_url = 'https://api.openai.com/v1/chat/completions'  # Check OpenAI API documentation for the correct endpoint
-    api_key = 'YOUR_API_KEY'
+    api_key = 'YOUR_API_KEY' # Use your API key here
 
     headers = {
         'Content-Type': 'application/json',
