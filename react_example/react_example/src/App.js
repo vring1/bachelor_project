@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import './App.css'; // Import the external CSS file
 
-// Functional component for the main App
 function App() {
   const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   const [apiLink, setApiLink] = useState('');
@@ -26,22 +26,26 @@ function App() {
       .catch(error => console.error(error));
   };
 
-
-  document.getElementById("change_content_button").addEventListener("dblclick", function() {
+  const handleDoubleClick = () => {
     alert("Button DOUBLE-clicked!");
-  });
+  }
 
   return (
-    <div>
-      <h1>JS Example</h1>
-      <p id="demo">{content}</p>
-      <button id="change_content_button" onClick={changeContent}>
+    <div className="container">
+      <h1 className="heading">JS Example</h1>
+      <p id="demo" className="paragraph">{content}</p>
+      <button id="change_content_button" className="button" onClick={changeContent}>
         Change content
       </button>
-      <button onClick={changeContentBack}>Change content back</button>
-      <button onClick={openNewWindow}>Open new window</button>
+      <button className="button" onClick={changeContentBack} onDoubleClick={handleDoubleClick}>
+        Change content back
+      </button>
+      <button className="button" onClick={openNewWindow}>
+        Open new window
+      </button>
 
       <form
+        className="form"
         onSubmit={(e) => {
           e.preventDefault();
           fetchDataFromAPILink();
@@ -53,8 +57,9 @@ function App() {
           placeholder="Enter an API link to fetch"
           value={apiLink}
           onChange={(e) => setApiLink(e.target.value)}
+          className="input"
         />
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Submit" className="submitButton" />
       </form>
     </div>
   );
