@@ -17,24 +17,14 @@ function App() {
     window.open('https://www.google.com');
   };
 
-  const fetchDataFromAPILink = async () => {
-  const linkToFetch = apiLink.trim() !== '' ? apiLink : 'https://api.publicapis.org/entries';
+  const fetchDataFromAPILink = () => {
+    const linkToFetch = apiLink.trim() !== '' ? apiLink : 'https://api.publicapis.org/entries';
 
-  try {
-    const response = await fetch('http://localhost:5000/fetch-api-from-server', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ apiLink: linkToFetch }),
-    });
-
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+    fetch(linkToFetch)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  };
 
   const handleDoubleClick = () => {
     alert("Button DOUBLE-clicked!");
