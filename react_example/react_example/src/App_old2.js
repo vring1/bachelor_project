@@ -4,9 +4,6 @@ import './App.css'; // Import the external CSS file
 function App() {
   const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   const [fetchedData, setFetchedData] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [graphId, setGraphId] = useState('');
 
   const changeContent = () => {
     setContent('New Content!');
@@ -21,7 +18,7 @@ function App() {
   };
 
   const fetchFromServer = () => {
-    fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${graphId}`)
+    fetch('http://localhost:5000/fetchData') // Sending a GET request to the server
       .then(response => response.json())
       .then(data => {
         console.log(data); // Add this line to inspect the fetched data in the console
@@ -48,14 +45,9 @@ function App() {
         Open new window
       </button>
 
-      <div>
-        <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
-        <input type="text" value={graphId} onChange={e => setGraphId(e.target.value)} placeholder="Graph ID" />
-        <button className="button" onClick={fetchFromServer}>
-          Fetch data from server
-        </button>
-      </div>
+      <button className="button" onClick={fetchFromServer}>
+        Fetch data from server
+      </button>
 
       {/* Display fetched data */}
       <div>
