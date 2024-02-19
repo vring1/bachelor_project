@@ -114,7 +114,15 @@ data_fetcher = DataFetcher()
 @app.route('/fetchGraphs', methods=['GET'])
 def fetch_graphs():
     graphs = data_fetcher.fetch_graphs()
-    return jsonify({'graphs': graphs})
+    #return jsonify({'graphs': graphs})
+    # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
+    filtered_graphs = [graph for graph in graphs if
+                       "blood draw" == graph['@title'].lower() or
+                       "testing" == graph['@title'].lower() or
+                       "aaa" == graph['@title'].lower() or
+                       "dcr" == graph['@title'].lower()]
+
+    return jsonify({'graphs': filtered_graphs})
 
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
