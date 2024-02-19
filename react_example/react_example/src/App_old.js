@@ -3,7 +3,11 @@ import './App.css'; // Import the external CSS file
 
 function App() {
   const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
-  const [apiLink, setApiLink] = useState('');
+  const [fetchedData, setFetchedData] = useState([]);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [graphId, setGraphId] = useState('');
+  const [role, setRole] = useState('');
 
   const changeContent = () => {
     setContent('New Content!');
@@ -17,18 +21,24 @@ function App() {
     window.open('https://www.google.com');
   };
 
-  const fetchDataFromAPILink = () => {
-    const linkToFetch = apiLink.trim() !== '' ? apiLink : 'https://api.publicapis.org/entries';
-
-    fetch(linkToFetch)
+  const fetchFromServer = () => {
+    fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${graphId}&role=${role}`)
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(data => {
+        console.log(data); // Add this line to inspect the fetched data in the console
+        setFetchedData(data.labels); // Update state with fetched data from the server
+      })
       .catch(error => console.error(error));
   };
 
   const handleDoubleClick = () => {
     alert("Button DOUBLE-clicked!");
-  }
+  };
+
+  const handleButtonClick = (label) => {
+    alert(`Button clicked: ${label}`);
+    // Here you can add any action you want to perform when the button is clicked
+  };
 
   return (
     <div className="container">
@@ -44,23 +54,25 @@ function App() {
         Open new window
       </button>
 
-      <form
-        className="form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          fetchDataFromAPILink();
-        }}
-      >
-        <input
-          type="text"
-          id="api_link"
-          placeholder="Enter an API link to fetch"
-          value={apiLink}
-          onChange={(e) => setApiLink(e.target.value)}
-          className="input"
-        />
-        <input type="submit" value="Submit" className="submitButton" />
-      </form>
+      <div>
+        <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
+        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
+        <input type="text" value={graphId} onChange={e => setGraphId(e.target.value)} placeholder="Graph ID" />
+        <input type="text" value={role} onChange={e => setRole(e.target.value)} placeholder="Role" />
+        <button className="button" onClick={fetchFromServer}>
+          Fetch data from server
+        </button>
+      </div>
+
+      {/* Display fetched data */}
+      <div>
+        <h2>Fetched Data:</h2>
+        {fetchedData.map((item, index) => (
+          <button key={index} onClick={() => handleButtonClick(item)}>
+            {item}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

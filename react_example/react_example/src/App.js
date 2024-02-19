@@ -4,9 +4,12 @@ import './App.css'; // Import the external CSS file
 function App() {
   const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   const [fetchedData, setFetchedData] = useState([]);
+  const [fetchedGraphs, setFetchedGraphs] = useState([]);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [graphId, setGraphId] = useState('');
+  //const [graphId, setGraphId] = useState('');
+  const [role, setRole] = useState('');
 
   const changeContent = () => {
     setContent('New Content!');
@@ -20,19 +23,50 @@ function App() {
     window.open('https://www.google.com');
   };
 
-  const fetchFromServer = () => {
-    fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${graphId}`)
+  const fetchFromServer = (id) => {
+    fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${id}&role=${role}`)
       .then(response => response.json())
       .then(data => {
         console.log(data); // Add this line to inspect the fetched data in the console
-        setFetchedData(data.labels); // Update state with fetched data from the server
+        // Assuming data is an array and each item in the array has a 'label' property
+        setFetchedData(data.labels); // Update state with fetched labels from the server
+        console.log(data.labels);
       })
       .catch(error => console.error(error));
   };
+  const fetchGraphs = () => {
+    fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // Add this line to inspect the fetched data in the console
+        // Assuming data is an array and each item in the array has a 'label' property
+        setFetchedGraphs(data.graphs); // Update state with fetched labels from the server
+        console.log(data.graphs);
+      })
+      .catch(error => console.error(error));
+  }
 
   const handleDoubleClick = () => {
     alert("Button DOUBLE-clicked!");
   };
+
+  const performEvent = (event_id) => {
+    // Make a POST request to perform the event
+    fetch('http://localhost:5000/performEvent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ event_id: event_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data); // You can handle the response here if needed
+      setFetchedData(data.labels);
+    })
+    .catch(error => console.error(error));
+  };
+  
 
   return (
     <div className="container">
@@ -51,21 +85,36 @@ function App() {
       <div>
         <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
-        <input type="text" value={graphId} onChange={e => setGraphId(e.target.value)} placeholder="Graph ID" />
-        <button className="button" onClick={fetchFromServer}>
+        {/*<input type="text" value={graphId} onChange={e => setGraphId(e.target.value)} placeholder="Graph ID" />*/}
+        <input type="text" value={role} onChange={e => setRole(e.target.value)} placeholder="Role" />
+        {/*<button className="button" onClick={fetchFromServer}>
           Fetch data from server
+        </button> */}
+        <button className="button" onClick={fetchGraphs}>
+          Fetch graphs
         </button>
       </div>
 
       {/* Display fetched data */}
       <div>
         <h2>Fetched Data:</h2>
-        <ul>
-          {fetchedData.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
+        {fetchedData.map((item, index) => (
+          <button key={index} onClick={() => performEvent(item['@id'])}>
+            {item['@label']}
+          </button>
+        ))}
       </div>
+      {/* Display fetched graphs */}
+      <div>
+        <h2>Fetched Graphs:</h2>
+        {fetchedGraphs.map((graph, index) => (
+          <button key={index} onClick={() => fetchFromServer(graph['@id'])}>
+            {graph['@title']}
+          </button>
+        ))}
+      </div>
+
+      
     </div>
   );
 }
