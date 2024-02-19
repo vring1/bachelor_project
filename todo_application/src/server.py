@@ -105,6 +105,11 @@ class DataFetcher:
 
         #labels = [event['@label'] for event in events_json['events']['event'] if event['@roles'] == self.role]
         filtered_events = [event for event in events_json['events']['event'] if event['@roles'] == self.role]
+        
+        #pending_events_exist = any(event['@pending'] == 'true' or event['@EffectivelyPending'] == 'true' for event in filtered_events)
+        
+        #if not pending_events_exist:
+        #    filtered_events = []
 
         return filtered_events
 

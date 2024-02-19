@@ -8,7 +8,8 @@ function App() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  //const [graphId, setGraphId] = useState('');
+
+  const [graphId, setGraphId] = useState(null);
   const [role, setRole] = useState('');
 
   const changeContent = () => {
@@ -30,6 +31,7 @@ function App() {
         console.log(data); // Add this line to inspect the fetched data in the console
         // Assuming data is an array and each item in the array has a 'label' property
         setFetchedData(data.labels); // Update state with fetched labels from the server
+        setGraphId(id);
         console.log(data.labels);
       })
       .catch(error => console.error(error));
@@ -49,6 +51,7 @@ function App() {
   const handleDoubleClick = () => {
     alert("Button DOUBLE-clicked!");
   };
+  
 
   const performEvent = (event_id) => {
     // Make a POST request to perform the event
@@ -63,11 +66,22 @@ function App() {
     .then(data => {
       console.log(data); // You can handle the response here if needed
       setFetchedData(data.labels);
+      //checkPendingTasks(graphId); // Check if there are any pending tasks
+      // Check if there are any pending tasks
+      //if (data.labels.length === 0) {
+      //  alert('No more pending tasks!');
+      //}
     })
     .catch(error => console.error(error));
   };
   
-
+  const clearEvents = () => {
+    // Reset the fetched data to an empty array
+    setFetchedData([]);
+    // Perform any other cleanup or reset tasks as needed
+    // For example, you might want to reset other state variables or perform additional actions
+  };
+  
   return (
     <div className="container">
       <h1 className="heading">JS Example</h1>
@@ -99,7 +113,9 @@ function App() {
       <div>
         <h2>Fetched Data:</h2>
         {fetchedData.map((item, index) => (
-          <button key={index} onClick={() => performEvent(item['@id'])}>
+          <button key={index} className={item['@pending'] === 'true' ||
+           item['@EffectivelyPending'] === 'true' ? 'pending-button' : 'regular-button'}
+            onClick={() => performEvent(item['@id'])}>
             {item['@label']}
           </button>
         ))}
@@ -113,7 +129,12 @@ function App() {
           </button>
         ))}
       </div>
-
+      <div>
+        {/* Render clear events button only if there are no pending tasks */}
+        <button className="button" onClick={clearEvents}>
+          Clear Events
+        </button>     
+      </div>
       
     </div>
   );
