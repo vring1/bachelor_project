@@ -7,6 +7,7 @@
 3. only giving the client relevant data (filtering away other roles from the json)
 4. graphs API'en giver en masse grafer der ikke tilhører profilen
 5. limited to the amount of API calls available from the provider
+6. API calls cost money
 
 ## TODO
 

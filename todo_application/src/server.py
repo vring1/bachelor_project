@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import httpx
 import xmltodict
+import openai
 
 class MyApp(Flask):
     def __init__(self, *args, **kwargs):
@@ -17,7 +18,6 @@ class DataFetcher:
         self.password = 'Valdemar_Nick91'#None#
         self.role = 'Nurse'#None#
         self.simulation_id = None
-        self.event_mapping = {}  # Dictionary to store mapping of labels to ids
 
     def fetch_graphs(self):
         #self.graph_id = request.args.get('graph_id')
@@ -112,8 +112,34 @@ class DataFetcher:
         #    filtered_events = []
 
         return filtered_events
+    
 
 data_fetcher = DataFetcher()
+
+system_context = "You are an intelligent assistant providing advice on tasks for morning routines, evening routines, or general tasks. Feel free to ask for recommendations!"
+
+# Set the OpenAI API key
+openai.api_key = open('api_key.txt', 'r').read().strip('\n')
+messages = [ {"role": "system", "content":  
+              system_context} ] 
+# Flask route to handle chat requests
+@app.route('/chat', methods=['POST'])
+def chat():
+    # Extract the message content from the client request
+    message = request.json['message']
+    if message: 
+        messages.append( 
+            {"role": "user", "content": message}, 
+        ) 
+        chat = openai.ChatCompletion.create( 
+            model="gpt-3.5-turbo", messages=messages 
+        )
+    else:
+        raise ValueError("Message is empty")
+    
+    reply = chat.choices[0].message.content 
+    # Return the response back to the client
+    return jsonify({'response': reply})
 
 
 @app.route('/fetchGraphs', methods=['GET'])

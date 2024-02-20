@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css'; // Import the external CSS file
 
 function App() {
@@ -11,39 +11,6 @@ function App() {
 
   const [graphId, setGraphId] = useState(null);
   const [role, setRole] = useState('');
-
-  const [message, setMessage] = useState('');
-  const [response, setResponse] = useState('');
-
-  const sendMessage = () => {
-    fetch('http://localhost:5000/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message: message })
-    })
-    .then(response => response.json())
-    .then(data => {
-      setResponse(data.response);
-    })
-    .catch(error => console.error(error));
-  };
-
-  const sendMessageFromButton = (msg) => {
-    fetch('http://localhost:5000/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message: msg })
-    })
-    .then(response => response.json())
-    .then(data => {
-      setResponse(data.response);
-    })
-    .catch(error => console.error(error));
-  };
 
   const changeContent = () => {
     setContent('New Content!');
@@ -168,23 +135,7 @@ function App() {
           Clear Events
         </button>     
       </div>
-
-      <h1 className="heading">Chatbot Example</h1>
-      <input 
-        type="text" 
-        value={message} 
-        onChange={e => setMessage(e.target.value)} 
-        placeholder="Type your message..." 
-      />
-      <button onClick={sendMessage}>Send</button>
-      <div>
-        <p>Bot's response:</p>
-        <p>{response}</p>
-      </div>
-      <h2 className='exampleMessages'>Example messages:</h2>
-      <button onClick={() => {
-        sendMessageFromButton('Which tasks could I add to my morning routine?');
-      }}>Which tasks could I add to my morning routine?</button>
+      
     </div>
   );
 }
