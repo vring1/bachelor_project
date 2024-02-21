@@ -17,7 +17,7 @@ function Login() {
         // Assuming data.graphs is not empty to consider it a success
         if (data.graphs) {
           console.log(data.graphs);
-          navigate('/home', {state: { username, password, role}}); // Redirect to /home upon successful login
+          navigate('/home')//, {state: { username, password, role}}); // Redirect to /home upon successful login
         } else {
           setErrorMessage('User does not exist or invalid credentials'); // Set error message
         }

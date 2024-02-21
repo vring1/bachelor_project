@@ -19,7 +19,7 @@ const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   const [response, setResponse] = useState('');
 
   const location = useLocation();
-  const {username, password, role} = location.state;
+  //const {username, password, role} = location.state;
 
   const sendMessage = () => {
     fetch('http://localhost:5000/chat', {
@@ -64,7 +64,8 @@ const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   };
 
   const fetchFromServer = (id) => {
-    fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${id}&role=${role}`)
+    //fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${id}&role=${role}`)
+    fetch(`http://localhost:5000/fetchData?graph_id=${id}`)
       .then(response => response.json())
       .then(data => {
         console.log(data); // Add this line to inspect the fetched data in the console
@@ -76,7 +77,8 @@ const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
       .catch(error => console.error(error));
   };
   const fetchGraphs = () => {
-    fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}`)
+    //fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}`)
+    fetch(`http://localhost:5000/fetchGraphsAfterLogin`)
       .then(response => response.json())
       .then(data => {
         console.log(data); // Add this line to inspect the fetched data in the console

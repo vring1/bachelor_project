@@ -30,20 +30,34 @@ if db.is_connected():
 else:
     print("Failed to connect to MySQL database")
 
+
 class DataFetcher:
     def __init__(self):
         #self.graph_id = 1704571#None#
-        #self.username = 'birgitte_stage@yahoo.dk'#None#
-        #self.password = 'Valdemar_Nick91'#None#
-        #self.role = 'Nurse'#None#
+        #self.username = None#'birgitte_stage@yahoo.dk'#None#
+        #self.password = None#'Valdemar_Nick91'#None#
+        #self.role = None#'Nurse'#None#
         self.simulation_id = None
 
     def fetch_graphs(self):
         #self.graph_id = request.args.get('graph_id')
-        #if self.username is None or self.password is None or self.role is None:
         self.username = request.args.get('username')
         self.password = request.args.get('password')
         self.role = request.args.get('role')
+        graphs = httpx.get(
+            url=f"https://repository.dcrgraphs.net/api/graphs?sort=title",
+            auth=(self.username, self.password)
+        )
+
+        graphs_json = xmltodict.parse(graphs.text)
+        print(graphs_json['graphs']['graph'])
+        return graphs_json['graphs']['graph']
+    
+    def fetch_graphs_after_login(self):
+        print("\n\n\n")
+        #print("USERNAME AND PASSWORD: ", self.username + " " + self.password)
+        print("\n\n\n")
+
         graphs = httpx.get(
             url=f"https://repository.dcrgraphs.net/api/graphs?sort=title",
             auth=(self.username, self.password)
@@ -56,10 +70,10 @@ class DataFetcher:
 
     def fetch_data(self):
         self.graph_id = request.args.get('graph_id')
-        print("GRAPHID: " + self.graph_id)
-        self.username = request.args.get('username')
-        self.password = request.args.get('password')
-        self.role = request.args.get('role')
+        #print("GRAPHID: " + self.graph_id)
+        #self.username = request.args.get('username')
+        #self.password = request.args.get('password')
+        #self.role = request.args.get('role')
 
         print('Fetching data')
 
@@ -160,6 +174,19 @@ def chat():
     reply = chat.choices[0].message.content 
     # Return the response back to the client
     return jsonify({'response': reply})
+
+@app.route('/fetchGraphsAfterLogin', methods=['GET'])
+def fetch_graphs_after_login():
+    graphs = data_fetcher.fetch_graphs_after_login()
+    #return jsonify({'graphs': graphs})
+    # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
+    filtered_graphs = [graph for graph in graphs if
+                       "blood draw" == graph['@title'].lower() or
+                       "testing" == graph['@title'].lower() or
+                       "aaa" == graph['@title'].lower() or
+                       "dcr" == graph['@title'].lower()]
+
+    return jsonify({'graphs': filtered_graphs})
 
 
 @app.route('/fetchGraphs', methods=['GET'])
