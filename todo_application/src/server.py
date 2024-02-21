@@ -3,6 +3,7 @@ from flask_cors import CORS
 import httpx
 import xmltodict
 import openai
+import mysql.connector
 
 class MyApp(Flask):
     def __init__(self, *args, **kwargs):
@@ -11,19 +12,38 @@ class MyApp(Flask):
 
 app = MyApp(__name__)
 
+mysql_host = 'localhost'
+mysql_user = 'root'
+mysql_password = 'password'
+mysql_db = 'todo_database'
+
+db = mysql.connector.connect(
+    host=mysql_host,
+    user=mysql_user,
+    password=mysql_password,
+    database=mysql_db
+)
+
+# Check if the connection is successful
+if db.is_connected():
+    print("Connection to MySQL database successful")
+else:
+    print("Failed to connect to MySQL database")
+
 class DataFetcher:
     def __init__(self):
-        self.graph_id = 1704571#None#
-        self.username = 'birgitte_stage@yahoo.dk'#None#
-        self.password = 'Valdemar_Nick91'#None#
-        self.role = 'Nurse'#None#
+        #self.graph_id = 1704571#None#
+        #self.username = 'birgitte_stage@yahoo.dk'#None#
+        #self.password = 'Valdemar_Nick91'#None#
+        #self.role = 'Nurse'#None#
         self.simulation_id = None
 
     def fetch_graphs(self):
         #self.graph_id = request.args.get('graph_id')
-        #self.username = request.args.get('username')
-        #self.password = request.args.get('password')
-        #self.role = request.args.get('role')
+        #if self.username is None or self.password is None or self.role is None:
+        self.username = request.args.get('username')
+        self.password = request.args.get('password')
+        self.role = request.args.get('role')
         graphs = httpx.get(
             url=f"https://repository.dcrgraphs.net/api/graphs?sort=title",
             auth=(self.username, self.password)
@@ -37,9 +57,9 @@ class DataFetcher:
     def fetch_data(self):
         self.graph_id = request.args.get('graph_id')
         print("GRAPHID: " + self.graph_id)
-        #self.username = request.args.get('username')
-        #self.password = request.args.get('password')
-        #self.role = request.args.get('role')
+        self.username = request.args.get('username')
+        self.password = request.args.get('password')
+        self.role = request.args.get('role')
 
         print('Fetching data')
 
@@ -176,6 +196,8 @@ def perform_graph_event():
     data_fetcher.graph_id = graph_id
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
+
+
 
 if __name__ == '__main__':
     print('Starting server')

@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import './App.css'; // Import the external CSS file
+import { Link, useLocation } from 'react-router-dom';
 
-function App() {
-  const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
+import './../App.css';
+
+
+function Home() {
+const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   const [fetchedData, setFetchedData] = useState([]);
   const [fetchedGraphs, setFetchedGraphs] = useState([]);
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  //const [username, setUsername] = useState('');
+  //const [password, setPassword] = useState('');
 
   const [graphId, setGraphId] = useState(null);
-  const [role, setRole] = useState('');
+  //const [role, setRole] = useState('');
 
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
+
+  const location = useLocation();
+  const {username, password, role} = location.state;
 
   const sendMessage = () => {
     fetch('http://localhost:5000/chat', {
@@ -114,9 +120,12 @@ function App() {
     // Perform any other cleanup or reset tasks as needed
     // For example, you might want to reset other state variables or perform additional actions
   };
-  
+
   return (
     <div className="container">
+        <Link to="/">
+        <button>Log out</button>
+      </Link>
       <h1 className="heading">JS Example</h1>
       <p id="demo" className="paragraph">{content}</p>
       <button id="change_content_button" className="button" onClick={changeContent}>
@@ -130,10 +139,10 @@ function App() {
       </button>
 
       <div>
-        <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
+        {/*<input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
-        {/*<input type="text" value={graphId} onChange={e => setGraphId(e.target.value)} placeholder="Graph ID" />*/}
-        <input type="text" value={role} onChange={e => setRole(e.target.value)} placeholder="Role" />
+        <input type="text" value={graphId} onChange={e => setGraphId(e.target.value)} placeholder="Graph ID" />
+        <input type="text" value={role} onChange={e => setRole(e.target.value)} placeholder="Role" /> */}
         {/*<button className="button" onClick={fetchFromServer}>
           Fetch data from server
         </button> */}
@@ -187,6 +196,7 @@ function App() {
       }}>Which tasks could I add to my morning routine?</button>
     </div>
   );
+
 }
 
-export default App;
+export default Home;

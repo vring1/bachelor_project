@@ -8,6 +8,7 @@
 4. graphs API'en giver en masse grafer der ikke tilhører profilen
 5. limited to the amount of API calls available from the provider
 6. API calls cost money
+7. pip install mysql-connector-python
 
 ## TODO
 

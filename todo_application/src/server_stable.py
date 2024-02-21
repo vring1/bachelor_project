@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import httpx
 import xmltodict
+import openai
+import mysql.connector
 
 class MyApp(Flask):
     def __init__(self, *args, **kwargs):
@@ -10,14 +12,31 @@ class MyApp(Flask):
 
 app = MyApp(__name__)
 
+mysql_host = 'localhost'
+mysql_user = 'root'
+mysql_password = 'password'
+mysql_db = 'todo_database'
+
+db = mysql.connector.connect(
+    host=mysql_host,
+    user=mysql_user,
+    password=mysql_password,
+    database=mysql_db
+)
+
+# Check if the connection is successful
+if db.is_connected():
+    print("Connection to MySQL database successful")
+else:
+    print("Failed to connect to MySQL database")
+
 class DataFetcher:
     def __init__(self):
-        self.graph_id = 1704571#None#
+        #self.graph_id = 1704571#None#
         self.username = 'birgitte_stage@yahoo.dk'#None#
         self.password = 'Valdemar_Nick91'#None#
         self.role = 'Nurse'#None#
         self.simulation_id = None
-        self.event_mapping = {}  # Dictionary to store mapping of labels to ids
 
     def fetch_graphs(self):
         #self.graph_id = request.args.get('graph_id')
@@ -112,8 +131,34 @@ class DataFetcher:
         #    filtered_events = []
 
         return filtered_events
+    
 
 data_fetcher = DataFetcher()
+
+system_context = "You are an intelligent assistant providing advice on tasks for morning routines, evening routines, or general tasks. Feel free to ask for recommendations!"
+
+# Set the OpenAI API key
+openai.api_key = open('api_key.txt', 'r').read().strip('\n')
+messages = [ {"role": "system", "content":  
+              system_context} ] 
+# Flask route to handle chat requests
+@app.route('/chat', methods=['POST'])
+def chat():
+    # Extract the message content from the client request
+    message = request.json['message']
+    if message: 
+        messages.append( 
+            {"role": "user", "content": message}, 
+        ) 
+        chat = openai.ChatCompletion.create( 
+            model="gpt-3.5-turbo", messages=messages 
+        )
+    else:
+        raise ValueError("Message is empty")
+    
+    reply = chat.choices[0].message.content 
+    # Return the response back to the client
+    return jsonify({'response': reply})
 
 
 @app.route('/fetchGraphs', methods=['GET'])
@@ -150,6 +195,9 @@ def perform_graph_event():
     data_fetcher.graph_id = graph_id
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
+
+
+
 
 if __name__ == '__main__':
     print('Starting server')
