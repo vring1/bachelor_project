@@ -10,21 +10,21 @@ function Login() {
 
   const fetchGraphs = (e) => {
     e.preventDefault(); // Prevent default form submission
-    fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}&role=${role}`)
+    fetch(`http://localhost:5000/testIfUserExistsInDcrAndAddToDatabase?username=${username}&password=${password}&role=${role}`)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        // Assuming data.graphs is not empty to consider it a success
-        if (data.graphs) {
-          console.log(data.graphs);
-          navigate('/home')//, {state: { username, password, role}}); // Redirect to /home upon successful login
-        } else {
-          setErrorMessage('User does not exist or invalid credentials'); // Set error message
+        if (data === null) {
+          setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
+        } else if (data.graphs) {
+          navigate('/home'); // Redirect to /home upon successful login
+        } 
+        else {
+          setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
         }
       })
       .catch(error => {
         console.error(error);
-        setErrorMessage('User does not exist or invalid credentials'); // Set error message
+        setErrorMessage('An error occurred. Please try again later.'); // Set error message
       });
   }
 

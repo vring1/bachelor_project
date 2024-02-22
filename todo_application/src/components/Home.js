@@ -9,6 +9,8 @@ const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
   const [fetchedData, setFetchedData] = useState([]);
   const [fetchedGraphs, setFetchedGraphs] = useState([]);
 
+  const [errorMessage, setErrorMessage] = useState(''); // State to store error message
+
   //const [username, setUsername] = useState('');
   //const [password, setPassword] = useState('');
 
@@ -81,10 +83,16 @@ const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
     fetch(`http://localhost:5000/fetchGraphsAfterLogin`)
       .then(response => response.json())
       .then(data => {
-        console.log(data); // Add this line to inspect the fetched data in the console
+        //console.log(data); // Add this line to inspect the fetched data in the console
         // Assuming data is an array and each item in the array has a 'label' property
-        setFetchedGraphs(data.graphs); // Update state with fetched labels from the server
-        console.log(data.graphs);
+        if (data === null) {
+          setErrorMessage('You are not logged in (TODO: maybe send you to login page)'); // Set appropriate error message
+        } else if (data.graphs) {
+          setFetchedGraphs(data.graphs); // Update state with fetched labels from the server
+        } else {
+          setErrorMessage('No graphs found for this user.'); // Set appropriate error message
+        }
+        //console.log(data.graphs);
       })
       .catch(error => console.error(error));
   }
@@ -151,6 +159,12 @@ const [content, setContent] = useState('THIS IS THE CONTENT IN THE BEGINNING');
         <button className="button" onClick={fetchGraphs}>
           Fetch graphs
         </button>
+        {/* Render error message if fetch attempt fails */}
+        {errorMessage && (
+          <div>
+            <p>{errorMessage}</p>
+          </div>
+        )}
       </div>
 
       {/* Display fetched data */}

@@ -9,9 +9,11 @@
 5. limited to the amount of API calls available from the provider
 6. API calls cost money
 7. pip install mysql-connector-python
+8. if the server is restarted midsession, the user is still on the home page, but cant use anything
 
 ## TODO
 
+1. Make /home only accesible via the other route (not just entering .../home)
 1. Lav loginside, så man logger ind først. Lav test API kald, så man ved om en matchende DCR konto findes.
    - database med brugere
    - man kan registrere sin bruger såfremt navn og kode findes på DCR
