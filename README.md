@@ -10,6 +10,8 @@
 6. API calls cost money
 7. pip install mysql-connector-python
 8. if the server is restarted midsession, the user is still on the home page, but cant use anything
+9. Session management (first big challenge)
+10. redis??
 
 ## TODO
 
@@ -31,3 +33,10 @@
    - You should be able to write some natural language and then it should convert it to conditionals etc.
    - Also it should be used to give suggestions to tasks and graphs in generel.
 1. Make pretty
+
+## How the session management works
+
+1. After logging in, the server sets cookie on the client called "session_id" (then you dont store password etc.)
+2. Everytime client makes request, the server receives that session_id
+3. Server will check for any session which refers to the session_id
+4. if there is a session with that id, you're authenticated.
