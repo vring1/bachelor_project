@@ -15,6 +15,16 @@
 
 ## TODO
 
+### Urgent
+
+1. Få session til at virke - indebærer ordentligt register/login logik.
+2. tjek om eksisterer i DCR når der registreres og brug simpel login logik når der skal logges ind (med database) + der er en med en admin rolle, der skal godkende når folk registrere en rolle
+3. hvis mail eksisterer + rolle eksisterer, ik add - hvis kun mail eksistere men ikke rollen også, tilføj
+4. /home skal måske ikke kunne tilgås hvis man ikke er logget ind.
+5. database sættes op, så graf navne / id kan hentes I stedet for hard coded
+
+### Other
+
 1. Make /home only accesible via the other route (not just entering .../home)
 1. Lav loginside, så man logger ind først. Lav test API kald, så man ved om en matchende DCR konto findes.
    - database med brugere
