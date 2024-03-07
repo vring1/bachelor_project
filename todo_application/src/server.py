@@ -4,7 +4,6 @@ import httpx
 import xmltodict
 import openai
 import mysql.connector
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 
 class MyApp(Flask):
     def __init__(self, *args, **kwargs):
@@ -12,9 +11,6 @@ class MyApp(Flask):
         CORS(self)
 
 app = MyApp(__name__)
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this to a random string in production
-#app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-jwt = JWTManager(app)
 
 class DataFetcher:
     def __init__(self):
@@ -26,13 +22,13 @@ class DataFetcher:
         mysql_host = 'localhost'
         mysql_user = 'root'
         mysql_password = 'password'
-        mysql_db = 'todo_database'
+        #mysql_db = 'todo_database'
         try:
             self.db = mysql.connector.connect(
             host=mysql_host,
             user=mysql_user,
-            password=mysql_password,
-            database=mysql_db
+            password=mysql_password#,
+            #database=mysql_db
             )
 
             self.cursor = self.db.cursor()
@@ -49,9 +45,13 @@ class DataFetcher:
                                "id INT AUTO_INCREMENT PRIMARY KEY,"
                                "username VARCHAR(255) NOT NULL,"
                                "password VARCHAR(255) NOT NULL,"
-                               "role VARCHAR(50) NOT NULL"
+                               "role VARCHAR(50)" # nullable, will be set later when logged in and admin have approved
                                ");")
                 
+                # drop table
+                #self.cursor.execute("DROP TABLE IF EXISTS users;")
+                
+
                 # Delete all users from the table
                 #self.cursor.execute("DELETE FROM users;")
                 #self.db.commit()
@@ -82,6 +82,18 @@ class DataFetcher:
                 print("Graphs: ")
                 for graph in graphs:
                     print(graph)
+
+                # Create a table for storing requests
+                self.cursor.execute("CREATE TABLE IF NOT EXISTS requests ("
+                                    "id INT AUTO_INCREMENT PRIMARY KEY,"
+                                    "username VARCHAR(255) NOT NULL,"
+                                    "role VARCHAR(50) NOT NULL"
+                                    ");")
+                self.cursor.execute("SELECT * FROM requests;")
+                requests = self.cursor.fetchall()
+                print("Requests: ")
+                for req in requests:
+                    print(req)
                 
         except mysql.connector.Error as e:
             print("Error: ", e)
@@ -91,14 +103,14 @@ class DataFetcher:
         #self.username = request.args.get('username')
         #self.password = request.args.get('password')
         #self.role = request.args.get('role')
-        username = request.args.get('username')
-        password = request.args.get('password')
-        role = request.args.get('role')
+        self.username = request.args.get('username')
+        self.password = request.args.get('password')
+        self.role = request.args.get('role') # role will be none, as role is not choosen when registering
 
         try:
             graphs = httpx.get(
                 url=f"https://repository.dcrgraphs.net/api/graphs?sort=title",
-                auth=(username, password)
+                auth=(self.username, self.password)
             )
             graphs_json = xmltodict.parse(graphs.text)
         except Exception as e:
@@ -106,7 +118,7 @@ class DataFetcher:
             return None
         # Check if user exists in database
         try:
-            self.cursor.execute("SELECT * FROM users WHERE username = %s;", (username,))
+            self.cursor.execute("SELECT * FROM users WHERE username = %s;", (self.username,))
             user = self.cursor.fetchone()
             print("User: ", user)
             if user is not None:
@@ -114,7 +126,7 @@ class DataFetcher:
             else:
                 # Add user to database if it does not exist
                 try:
-                    self.cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s);", (username, password, role))
+                    self.cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s);", (self.username, self.password, self.role))
                     self.db.commit()
                     print("User added to database")
                 except Exception as e:
@@ -125,24 +137,24 @@ class DataFetcher:
             print("Error: ", e)
             return None
         
-        session['username'] = username
-        session['password'] = password
-        session['role'] = role
-        print("Session username: ", session['username']) # THIS IS NOT NONE
-        print("Session password: ", session['password']) # THIS IS NOT NONE
-        print("Session role: ", session['role']) # THIS IS NOT NONE
+        #session['username'] = username
+        #session['password'] = password
+        #session['role'] = role
+        #print("Session username: ", session['username']) 
+        #print("Session password: ", session['password']) 
+        #print("Session role: ", session['role']) 
         return graphs_json['graphs']['graph']
     
     def fetch_graphs_after_login(self):
-        username = session.get('username')
-        password = session.get('password')
-        print("Session username: ", username) # THIS IS NONE
-        print("Session password: ", password) # THIS IS NONE
-        if username is None:
+        #username = session.get('username')
+        #password = session.get('password')
+        #print("Session username: ", username) 
+        #print("Session password: ", password) 
+        if self.username is None:
             return None
         graphs = httpx.get(
             url=f"https://repository.dcrgraphs.net/api/graphs?sort=title",
-            auth=(username, password)
+            auth=(self.username, self.password)
         )
 
         graphs_json = xmltodict.parse(graphs.text)
@@ -215,6 +227,23 @@ class DataFetcher:
         
         return filtered_events
     
+    def test_if_user_and_password_exists_in_database(self):
+        self.username = request.args.get('username')
+        self.password = request.args.get('password')
+        #self.role = request.args.get('role')
+        try:
+            self.cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s;", (self.username, self.password))
+            user = self.cursor.fetchone()
+            print("User: ", user)
+            if user is not None:
+                print("User exists in database")
+            else:
+                print("User does not exist in database")
+        except Exception as e:
+            print("Error: ", e)
+            return None
+        return user
+        
 
 data_fetcher = DataFetcher()
 
@@ -276,6 +305,14 @@ def test_if_user_exists_in_dcr_and_add_to_database():
     return jsonify({'graphs': filtered_graphs})
 
 
+@app.route('/testIfUserExistsInDatabase', methods=['GET'])
+def test_if_user_exists_in_database():
+    user = data_fetcher.test_if_user_and_password_exists_in_database()
+    if user is None:
+        return jsonify(None)
+    return jsonify({'user': user})
+    
+
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
     labels = data_fetcher.fetch_data()
@@ -297,6 +334,35 @@ def perform_graph_event():
     data_fetcher.graph_id = graph_id
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
+
+# This route should insert the role into a table called requests, where the requests are connected to a user
+@app.route('/requestRole', methods=['POST'])
+def request_role():
+    print("Requesting role for user: ", data_fetcher.username)
+    #username = request.args.get('username')
+    role = request.json['role']
+    try:
+        # Add role request to database, but only if the user has not already requested that specific role
+        data_fetcher.cursor.execute("SELECT * FROM requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
+        req = data_fetcher.cursor.fetchone()
+        print("Request: ", request)
+        if req is not None:
+            print("User has already requested that role")
+        else:
+            # Add role request to database if it does not exist
+            try:
+                data_fetcher.cursor.execute("INSERT INTO requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
+                data_fetcher.db.commit()
+                print("Role request added to database")
+
+            except Exception as e:
+                print("Error: ", e)
+                return None
+    except Exception as e:
+        print("Error: ", e)
+        return None
+    return jsonify({'username': data_fetcher.username, 'role': role})
+
 
 if __name__ == '__main__':
     print('Starting server')

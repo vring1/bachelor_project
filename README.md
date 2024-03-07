@@ -17,11 +17,13 @@
 
 ### Urgent
 
+1. MÅSKE FUCK SESSION OG KLAR ALT GENNEM DATABASE?? SÅ HVER GANG DER TRYKKES TJEK I DATABASEN HVOR USERNAME MATCHER F.EKS.
 1. Få session til at virke - indebærer ordentligt register/login logik.
-2. tjek om eksisterer i DCR når der registreres og brug simpel login logik når der skal logges ind (med database) + der er en med en admin rolle, der skal godkende når folk registrere en rolle
-3. hvis mail eksisterer + rolle eksisterer, ik add - hvis kun mail eksistere men ikke rollen også, tilføj
-4. /home skal måske ikke kunne tilgås hvis man ikke er logget ind.
-5. database sættes op, så graf navne / id kan hentes I stedet for hard coded
+1. tjek om eksisterer i DCR når der registreres og brug simpel login logik når der skal logges ind (med database) + der er en med en admin rolle, der skal godkende når folk registrere en rolle
+1. hvis mail eksisterer + rolle eksisterer, ik add - hvis kun mail eksistere men ikke rollen også, tilføj
+1. /home skal måske ikke kunne tilgås hvis man ikke er logget ind.
+1. database sættes op, så graf navne / id kan hentes I stedet for hard coded
+1. logout skal have en metode
 
 ### Other
 
@@ -50,3 +52,15 @@
 2. Everytime client makes request, the server receives that session_id
 3. Server will check for any session which refers to the session_id
 4. if there is a session with that id, you're authenticated.
+
+## MySQL setup with password...
+
+1. sudo service mysql stop
+1. sudo mysqld_safe --skip-grant-tables
+1. sudo service mysql start
+1. sudo mysql -u root
+1. use mysql;
+1. show tables;
+1. describe user;
+1. update user set authentication_string=password('1111') where user='root';
+1. FLUSH PRIVILEGES;
