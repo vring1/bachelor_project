@@ -17,6 +17,7 @@
 
 ### Urgent
 
+1. datafetcher har for mange responsibilities
 1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
 1. MÅSKE FUCK SESSION OG KLAR ALT GENNEM DATABASE?? SÅ HVER GANG DER TRYKKES TJEK I DATABASEN HVOR USERNAME MATCHER F.EKS.
 1. Få session til at virke - indebærer ordentligt register/login logik.
