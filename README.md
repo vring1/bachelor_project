@@ -17,9 +17,9 @@
 
 ### Urgent
 
-1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)
-1. role table, eftersom hver user kan have flere roles. Den nuværende "role" i user-tabellen skal laves om til status(bedre navn), der viser om en bruger er "user" eller "admin"...
+1. KÆMPE REFACTOR!!!
 1. datafetcher har for mange responsibilities
+1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)
 1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
 1. MÅSKE FUCK SESSION OG KLAR ALT GENNEM DATABASE?? SÅ HVER GANG DER TRYKKES TJEK I DATABASEN HVOR USERNAME MATCHER F.EKS.
 1. Få session til at virke - indebærer ordentligt register/login logik.
