@@ -20,8 +20,8 @@ class DataFetcher:
         #self.role = request.args.get('role')
         self.username = request.args.get('username')
         self.password = request.args.get('password')
-        self.role = 'Nurse'#request.args.get('role') # role will be none, as role is not choosen when registering
-        self.admin = True
+        self.role = None#'Nurse'#request.args.get('role') # role will be none, as role is not choosen when registering
+        self.admin = False
 
         try:
             graphs = httpx.get(

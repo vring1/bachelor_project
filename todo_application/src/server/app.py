@@ -159,9 +159,7 @@ def approve_role_request():
     role = request.json['role']
     try:
         # Add role to user in database
-        data_fetcher.cursor.execute("UPDATE roles SET role = %s WHERE username = %s;", (role, username))
-        print("Role: ", role)
-        print("Username: ", username)
+        data_fetcher.cursor.execute("INSERT INTO roles (role, username) VALUES (%s, %s);", (role, username))
         data_fetcher.db.commit()
         print("Role added to user in database")
         # Delete role request from database
@@ -172,3 +170,23 @@ def approve_role_request():
         print("Error: ", e)
         return None
     return jsonify({'username': username, 'role': role})
+
+
+@app.route('/fetchRolesForUser', methods=['GET'])
+def fetch_roles_for_user():
+    username = data_fetcher.username
+    try:
+        cursor = data_fetcher.cursor
+        # Query roles associated with the provided username
+        cursor.execute("SELECT role FROM roles WHERE username = %s;", (username,))
+        roles = [row[0] for row in cursor.fetchall()]  # Extract roles from the result set
+
+        return jsonify({'roles': roles}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/setDatafetcherRole', methods=['POST'])
+def set_data_fetcher_role():
+    role = request.json['role']
+    data_fetcher.role = role
+    return jsonify({'role': role})

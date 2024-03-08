@@ -17,14 +17,12 @@
 
 ### Urgent
 
-1. knap ud for forskellige requests som kan approve
+1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)
 1. role table, eftersom hver user kan have flere roles. Den nuværende "role" i user-tabellen skal laves om til status(bedre navn), der viser om en bruger er "user" eller "admin"...
 1. datafetcher har for mange responsibilities
 1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
 1. MÅSKE FUCK SESSION OG KLAR ALT GENNEM DATABASE?? SÅ HVER GANG DER TRYKKES TJEK I DATABASEN HVOR USERNAME MATCHER F.EKS.
 1. Få session til at virke - indebærer ordentligt register/login logik.
-1. tjek om eksisterer i DCR når der registreres og brug simpel login logik når der skal logges ind (med database) + der er en med en admin rolle, der skal godkende når folk registrere en rolle
-1. hvis mail eksisterer + rolle eksisterer, ik add - hvis kun mail eksistere men ikke rollen også, tilføj
 1. /home skal måske ikke kunne tilgås hvis man ikke er logget ind.
 1. database sættes op, så graf navne / id kan hentes I stedet for hard coded
 1. logout skal have en metode
@@ -32,9 +30,6 @@
 ### Other
 
 1. Make /home only accesible via the other route (not just entering .../home)
-1. Lav loginside, så man logger ind først. Lav test API kald, så man ved om en matchende DCR konto findes.
-   - database med brugere
-   - man kan registrere sin bruger såfremt navn og kode findes på DCR
 1. Choose different graphs (already implemented but..)
    - Add "Morgenrutine", "Aftenrutine", "Søndagsopgaver" etc.
 1. Brug database til grafnavne og load så kun dem man kender...

@@ -25,6 +25,9 @@ function Home() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [requests, setRequests] = useState([]); // State to store role requests
 
+  const [roles, setRoles] = useState([]); // State to store roles
+  const [selectedRole, setSelectedRole] = useState(''); // State to store selected role
+
   const checkIfAdmin = () => {
     fetch('http://localhost:5000/checkIfAdmin')
       .then(response => response.json())
@@ -161,6 +164,49 @@ function Home() {
     );
   };
 
+  const fetchRolesForUser = () => {
+    fetch('http://localhost:5000/fetchRolesForUser')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // Log the response for debugging
+        if (data.roles) {
+          console.log('Roles fetched successfully');
+          setRoles(data.roles); // Update state with fetched roles
+          console.log('Roles:', roles);
+          if (data.roles.length > 0) {
+            setSelectedRole(data.roles[0]);
+          }
+        } else {
+          console.log('No roles found');
+        }
+      }
+      )
+      .catch(error => console.error(error));
+  };
+
+    
+  const handleFetchRolesClick = () => {
+    fetchRolesForUser();
+  };
+
+  const sendSelectedRole = () => {
+    console.log('Selected role:', selectedRole);
+    if (selectedRole) {
+      fetch('http://localhost:5000/setDatafetcherRole', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ role: selectedRole })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => console.error(error));
+    }
+  };
+
   return (
     <div className="container">
         <Link to="/">
@@ -183,8 +229,20 @@ function Home() {
           <br/>
           <input type="submit" value="Submit" />
         </form>
-
+        <h3>Or choose a role:</h3>
+        <select name="role" onChange={e => setSelectedRole(e.target.value)} value={selectedRole}>
+            {roles.map((role, index) => (
+              <option key={index} value={role}>{role}</option>
+            ))}
+          </select>
+          <button className="button" onClick={sendSelectedRole}>
+          Send Selected Role
+          </button>
+          <button className="button" onClick={handleFetchRolesClick}>
+          Fetch Roles
+        </button>
       </div>
+        
       <div>
         <button className="button" onClick={handleFetchGraphs}>
           Fetch graphs

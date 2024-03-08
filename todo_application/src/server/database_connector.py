@@ -112,6 +112,10 @@ class DatabaseConnector:
                 #for table in tables:
                 #    print(table)
                 
+                # insert into users
+                #self.cursor.execute("INSERT INTO users (username, password, admin) VALUES ('valdemarring1@gmail.com', 'valdemar123', 1);")
+                #self.db.commit()
+
         
         except mysql.connector.Error as e:
             print("Error: ", e)
