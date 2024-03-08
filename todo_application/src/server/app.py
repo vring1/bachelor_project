@@ -93,7 +93,7 @@ def request_role():
     role = request.json['role']
     try:
         # Add role request to database, but only if the user has not already requested that specific role
-        data_fetcher.cursor.execute("SELECT * FROM requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
+        data_fetcher.cursor.execute("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
         req = data_fetcher.cursor.fetchone()
         print("Request: ", request)
         if req is not None:
@@ -101,7 +101,7 @@ def request_role():
         else:
             # Add role request to database if it does not exist
             try:
-                data_fetcher.cursor.execute("INSERT INTO requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
+                data_fetcher.cursor.execute("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
                 data_fetcher.db.commit()
                 print("Role request added to database")
 
@@ -112,3 +112,63 @@ def request_role():
         print("Error: ", e)
         return None
     return jsonify({'username': data_fetcher.username, 'role': role})
+
+@app.route('/checkIfAdmin', methods=['GET'])
+def check_if_admin():
+    print("Checking if user is admin: ", data_fetcher.username)
+    try:
+        data_fetcher.cursor.execute("SELECT * FROM users WHERE username = %s;", (data_fetcher.username,))
+        user = data_fetcher.cursor.fetchone()
+        print("User: ", user)
+        if user is not None:
+            print("User exists in database")
+            if user[3] == 1:
+                print("User is admin")
+                return jsonify({'admin': True})
+            else:
+                print("User is not admin")
+                return jsonify({'admin': False})
+        else:
+            print("User does not exist in database")
+            return jsonify({'admin': False})
+    except Exception as e:
+        print("Error: ", e)
+        return None
+
+@app.route('/fetchRoleRequests', methods=['GET'])
+def fetch_role_requests():
+    print("Fetching role requests")
+    try:
+        data_fetcher.cursor.execute("SELECT * FROM role_requests;")
+        requests = data_fetcher.cursor.fetchall()
+        print("Requests: ", requests)
+        if requests is not None:
+            print("Requests exist in database")
+            return jsonify({'requests': requests})
+        else:
+            print("No requests exist in database")
+            return jsonify({'requests': None})
+    except Exception as e:
+        print("Error: ", e)
+        return None
+
+@app.route('/approveRoleRequest', methods=['POST'])
+def approve_role_request():
+    print("Approving role request")
+    username = request.json['username']
+    role = request.json['role']
+    try:
+        # Add role to user in database
+        data_fetcher.cursor.execute("UPDATE roles SET role = %s WHERE username = %s;", (role, username))
+        print("Role: ", role)
+        print("Username: ", username)
+        data_fetcher.db.commit()
+        print("Role added to user in database")
+        # Delete role request from database
+        data_fetcher.cursor.execute("DELETE FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+        data_fetcher.db.commit()
+        print("Role request deleted from database")
+    except Exception as e:
+        print("Error: ", e)
+        return None
+    return jsonify({'username': username, 'role': role})

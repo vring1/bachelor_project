@@ -20,7 +20,8 @@ class DataFetcher:
         #self.role = request.args.get('role')
         self.username = request.args.get('username')
         self.password = request.args.get('password')
-        self.role = request.args.get('role') # role will be none, as role is not choosen when registering
+        self.role = 'Nurse'#request.args.get('role') # role will be none, as role is not choosen when registering
+        self.admin = True
 
         try:
             graphs = httpx.get(
@@ -41,7 +42,7 @@ class DataFetcher:
             else:
                 # Add user to database if it does not exist
                 try:
-                    self.cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s);", (self.username, self.password, self.role))
+                    self.cursor.execute("INSERT INTO users (username, password, admin) VALUES (%s, %s, %s);", (self.username, self.password, self.admin))
                     self.db.commit()
                     print("User added to database")
                 except Exception as e:

@@ -17,6 +17,8 @@
 
 ### Urgent
 
+1. knap ud for forskellige requests som kan approve
+1. role table, eftersom hver user kan have flere roles. Den nuværende "role" i user-tabellen skal laves om til status(bedre navn), der viser om en bruger er "user" eller "admin"...
 1. datafetcher har for mange responsibilities
 1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
 1. MÅSKE FUCK SESSION OG KLAR ALT GENNEM DATABASE?? SÅ HVER GANG DER TRYKKES TJEK I DATABASEN HVOR USERNAME MATCHER F.EKS.

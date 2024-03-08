@@ -26,7 +26,7 @@ class DatabaseConnector:
                                "id INT AUTO_INCREMENT PRIMARY KEY,"
                                "username VARCHAR(255) NOT NULL,"
                                "password VARCHAR(255) NOT NULL,"
-                               "role VARCHAR(50)" # nullable, will be set later when logged in and admin have approved
+                               "admin BOOLEAN"
                                ");")
                 
                 # drop table
@@ -65,17 +65,53 @@ class DatabaseConnector:
                     print(graph)
 
                 # Create a table for storing requests
-                self.cursor.execute("CREATE TABLE IF NOT EXISTS requests ("
+                self.cursor.execute("CREATE TABLE IF NOT EXISTS role_requests ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY,"
                                     "username VARCHAR(255) NOT NULL,"
-                                    "role VARCHAR(50) NOT NULL"
+                                    "role VARCHAR(50) NOT NULL,"
+                                    "approved BOOLEAN"
                                     ");")
-                self.cursor.execute("SELECT * FROM requests;")
+                # drop table
+                #self.cursor.execute("DROP TABLE IF EXISTS role_requests;")
+
+
+                # delete all requests
+                #self.cursor.execute("DELETE FROM requests;")
+                #self.db.commit()
+
+                self.cursor.execute("SELECT * FROM role_requests;")
                 requests = self.cursor.fetchall()
                 print("Requests: ")
                 for req in requests:
                     print(req)
-        
+
+
+                # Create a table for storing roles with their users
+                self.cursor.execute("CREATE TABLE IF NOT EXISTS roles ("
+                                    "id INT AUTO_INCREMENT PRIMARY KEY,"
+                                    "role VARCHAR(50) NOT NULL,"
+                                    "username VARCHAR(255) NOT NULL"
+                                    ");")
+                # drop table
+                #self.cursor.execute("DROP TABLE IF EXISTS roles;")
+
+                # delete all roles
+                #self.cursor.execute("DELETE FROM roles;")
+                #self.db.commit()
+
+                self.cursor.execute("SELECT * FROM roles;")
+                roles = self.cursor.fetchall()
+                print("Roles: ")
+                for role in roles:
+                    print(role)
+
+                # show tables
+                #self.cursor.execute("SHOW TABLES;")
+                #tables = self.cursor.fetchall()
+                #print("Tables: ")
+                #for table in tables:
+                #    print(table)
+                
         
         except mysql.connector.Error as e:
             print("Error: ", e)
