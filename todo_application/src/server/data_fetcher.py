@@ -1,7 +1,7 @@
 import httpx
 import xmltodict
 from database_connector import DatabaseConnector
-from flask import request
+from flask import request, session
 
 class DataFetcher:
     def __init__(self):
@@ -62,10 +62,12 @@ class DataFetcher:
         return graphs_json['graphs']['graph']
     
     def fetch_graphs_after_login(self):
-        #username = session.get('username')
-        #password = session.get('password')
-        #print("Session username: ", username) 
-        #print("Session password: ", password) 
+        # Session
+        print("Session: ", session)
+        if 'username' in session:
+            print("Session username at fetch graphs: ", session['username'])
+            print("Session password at fetch graphs: ", session['password'])
+
         if self.username is None:
             return None
         graphs = httpx.get(
@@ -146,6 +148,13 @@ class DataFetcher:
     def test_if_user_and_password_exists_in_database(self):
         self.username = request.args.get('username')
         self.password = request.args.get('password')
+
+        # Session
+        session['username'] = self.username
+        session['password'] = self.password
+        print("Session username at login: ", session['username'])
+        print("Session password at login: ", session['password'])
+
         #self.role = request.args.get('role')
         try:
             self.cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s;", (self.username, self.password))

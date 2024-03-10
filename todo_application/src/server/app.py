@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
+from flask_session import Session
 from flask_cors import CORS
 from database_connector import DatabaseConnector
 from data_fetcher import DataFetcher
@@ -6,8 +7,17 @@ from chat_handler import ChatHandler
 import openai
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 #db_connector = DatabaseConnector()
+
+# Session logic
+#app.config["SESSION_PERMANENT"] = False
+#app.config["SESSION_TYPE"] = "filesystem"
+#app.config["SESSION_COOKIE_SECURE"] = False
+#app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
+app.secret_key = "super secret key"
+#Session(app)
+
 data_fetcher = DataFetcher()
 chat_handler = ChatHandler()
 
@@ -46,7 +56,7 @@ def fetch_graphs_after_login():
     return jsonify({'graphs': filtered_graphs})
 
 @app.route('/testIfUserExistsInDcrAndAddToDatabase', methods=['GET'])
-def test_if_user_exists_in_dcr_and_add_to_database():
+def test_if_user_exists_in_dcr_and_add_to_database(): # Register
     graphs = data_fetcher.test_if_user_exists_in_dcr_and_add_to_database()
     if graphs is None:
         return jsonify(None)
@@ -61,7 +71,7 @@ def test_if_user_exists_in_dcr_and_add_to_database():
     return jsonify({'graphs': filtered_graphs})
 
 @app.route('/testIfUserExistsInDatabase', methods=['GET'])
-def test_if_user_exists_in_database():
+def test_if_user_exists_in_database(): # Login
     user = data_fetcher.test_if_user_and_password_exists_in_database()
     if user is None:
         return jsonify(None)

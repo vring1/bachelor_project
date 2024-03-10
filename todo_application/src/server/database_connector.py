@@ -26,7 +26,8 @@ class DatabaseConnector:
                                "id INT AUTO_INCREMENT PRIMARY KEY,"
                                "username VARCHAR(255) NOT NULL,"
                                "password VARCHAR(255) NOT NULL,"
-                               "admin BOOLEAN"
+                               "admin BOOLEAN,"
+                               "session_token VARCHAR(255)"
                                ");")
                 
                 # drop table
@@ -94,7 +95,7 @@ class DatabaseConnector:
                                     ");")
                 # drop table
                 #self.cursor.execute("DROP TABLE IF EXISTS roles;")
-
+                
                 # delete all roles
                 #self.cursor.execute("DELETE FROM roles;")
                 #self.db.commit()

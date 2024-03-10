@@ -15,7 +15,10 @@ const fetchFromServer = (id, setFetchedData, setGraphId) => {
 };
 const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
   //fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}`)
-  fetch(`http://localhost:5000/fetchGraphsAfterLogin`)
+  fetch(`http://localhost:5000/fetchGraphsAfterLogin` , {
+    method: 'GET',
+    credentials: 'include' // Include credentials
+  })
     .then(response => response.json())
     .then(data => {
       //console.log(data); // Add this line to inspect the fetched data in the console
