@@ -1,7 +1,7 @@
 import httpx
 import xmltodict
 from database_connector import DatabaseConnector
-from flask import request, session
+from flask import request
 
 class DataFetcher:
     def __init__(self):
@@ -53,20 +53,9 @@ class DataFetcher:
             print("Error: ", e)
             return None
         
-        #session['username'] = username
-        #session['password'] = password
-        #session['role'] = role
-        #print("Session username: ", session['username']) 
-        #print("Session password: ", session['password']) 
-        #print("Session role: ", session['role']) 
         return graphs_json['graphs']['graph']
     
     def fetch_graphs_after_login(self):
-        # Session
-        print("Session: ", session)
-        if 'username' in session:
-            print("Session username at fetch graphs: ", session['username'])
-            print("Session password at fetch graphs: ", session['password'])
 
         if self.username is None:
             return None
@@ -149,13 +138,6 @@ class DataFetcher:
         self.username = request.args.get('username')
         self.password = request.args.get('password')
 
-        # Session
-        session['username'] = self.username
-        session['password'] = self.password
-        print("Session username at login: ", session['username'])
-        print("Session password at login: ", session['password'])
-
-        #self.role = request.args.get('role')
         try:
             self.cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s;", (self.username, self.password))
             user = self.cursor.fetchone()

@@ -7,16 +7,8 @@ from chat_handler import ChatHandler
 import openai
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
-#db_connector = DatabaseConnector()
+CORS(app)
 
-# Session logic
-#app.config["SESSION_PERMANENT"] = False
-#app.config["SESSION_TYPE"] = "filesystem"
-#app.config["SESSION_COOKIE_SECURE"] = False
-#app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
-app.secret_key = "super secret key"
-#Session(app)
 
 data_fetcher = DataFetcher()
 chat_handler = ChatHandler()

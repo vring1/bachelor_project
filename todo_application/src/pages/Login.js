@@ -12,7 +12,10 @@ function Login() {
     e.preventDefault(); // Prevent default form submission
     fetch(`http://localhost:5000/testIfUserExistsInDatabase?username=${username}&password=${password}`, {
     method: 'GET',
-    credentials: 'include' // Include credentials
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    }
     })
       .then(response => response.json())
       .then(data => {
