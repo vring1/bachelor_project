@@ -63,3 +63,33 @@
 1. describe user;
 1. update user set authentication_string=password('1111') where user='root';
 1. FLUSH PRIVILEGES;
+
+## Spørgsmål / Noter til vejledning
+
+1. Hvordan skal rapport sættes op? - Disposition...
+   - Omfang???
+   - Declarative vs imperativ
+   - Brug af API (fordele ulemper) -f.eks. begrænsede muligehder fra udbyder
+   - App'en skal testes (dokumentation på det)
+   - Kode i appendix og online
+2. Indhold til rapport?
+
+   - Gennemgang af kode og processen med udvikling?
+   - Skal beskrive opbygningen af app'en (herunder især anvendelsen af de to API'er)
+
+3. Teori?
+   - Design patterns & principper (solid)?
+   - Objektorienteret programmering in general
+
+## Opgavebeskrivelse
+
+I projektet udvikles en todo-app der ved hjælp af DCR REST-api gør det muligt at se og opdatere dagens opgaver og
+planlægge opgaver, herunder gentagende opgaver og opgaver med og uden frist.
+ChatGPT API'en bruges til at komme med forslag til opgaver som kan tilføjes opgavelisten.
+
+Der afleveres en rapport som beskrive opbygningen af app’en, herunder især anvendelsen af de to API’er med
+diskussion af fordele/ulemper ved at bruge sådanne 3. part services samt hvordan app’en er testet og kan afprøves.
+Kode gøres tilgængeligt i appendix og online.
+
+Hvis tiden tillader laves integration med kalender via API og/eller der laves kategorier af opgaver (træningsøvelser,
+madopskrifter,m ..)
