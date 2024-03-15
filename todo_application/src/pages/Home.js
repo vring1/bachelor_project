@@ -255,11 +255,11 @@ function Home() {
         )}
       </div>
         
-      {/* Display fetched data */}
+      {/* Display fetched events */}
       <div>
-        <h2>Fetched Data:</h2>
+        <h2>Fetched Events:</h2>
         {fetchedData.map((item, index) => (
-          <button key={index} className={item['@pending'] === 'true' ||
+          <button key={index} className={item['@Pending'] === 'true' ||
            item['@EffectivelyPending'] === 'true' ? 'pending-button' : 'regular-button'}
             onClick={() => handlePerformEvent(item['@id'])}>
             {item['@label']}
@@ -270,8 +270,8 @@ function Home() {
       <div>
         <h2>Fetched Graphs:</h2>
         {fetchedGraphs.map((graph, index) => (
-          <button key={index} onClick={() => handleFetchFromServer(graph['@id'])}>
-            {graph['@title']}
+          <button key={index} onClick={() => handleFetchFromServer(graph['@Id'])}>
+            {graph['@Title']}
           </button>
         ))}
       </div>

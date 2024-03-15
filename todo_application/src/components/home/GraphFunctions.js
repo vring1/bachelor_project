@@ -17,7 +17,7 @@ const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
   //fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}`)
   fetch(`http://localhost:5000/fetchGraphsAfterLogin` , {
     method: 'GET',
-    credentials: 'include' // Include credentials
+    //credentials: 'include' // Include credentials
   })
     .then(response => response.json())
     .then(data => {

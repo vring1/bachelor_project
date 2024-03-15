@@ -134,9 +134,15 @@ class DataFetcher:
         
         return filtered_events
     
-    def test_if_user_and_password_exists_in_database(self):
-        self.username = request.args.get('username')
-        self.password = request.args.get('password')
+    def test_if_user_and_password_exists_in_database(self, username, password):
+        self.username = username
+        self.password = password
+        #self.username = request.args.get('username')
+        #self.password = request.args.get('password')
+        #self.cookie = request.cookies.get('loggedInUser')
+        #print("Cookie: ", self.cookie)
+        #user_cookie = request.cookies.get('user')
+        #print("User cookie: ", user_cookie)
 
         try:
             self.cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s;", (self.username, self.password))

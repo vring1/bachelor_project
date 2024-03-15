@@ -12,6 +12,7 @@
 8. if the server is restarted midsession, the user is still on the home page, but cant use anything
 9. Session management (first big challenge)
 10. redis??
+11. Sudden change in DCR API - naming in json is capital instead of lower case.
 
 ## TODO
 
@@ -67,7 +68,7 @@
 ## Spørgsmål / Noter til vejledning
 
 1. Hvordan skal rapport sættes op? - Disposition...
-   - Omfang???
+   - Omfang???v
    - Declarative vs imperativ
    - Brug af API (fordele ulemper) -f.eks. begrænsede muligehder fra udbyder
    - App'en skal testes (dokumentation på det)
@@ -93,3 +94,28 @@ Kode gøres tilgængeligt i appendix og online.
 
 Hvis tiden tillader laves integration med kalender via API og/eller der laves kategorier af opgaver (træningsøvelser,
 madopskrifter,m ..)
+
+### Inconsitency in DCR API naming
+
+```html
+{/* Display fetched events */}
+      <div>
+        <h2>Fetched Events:</h2>
+        {fetchedData.map((item, index) => (
+          <button key={index} className={item['@Pending'] === 'true' ||
+           item['@EffectivelyPending'] === 'true' ? 'pending-button' : 'regular-button'}
+            onClick={() => handlePerformEvent(item['@id'])}>
+            {item['@label']}
+          </button>
+        ))}
+      </div>
+      {/* Display fetched graphs */}
+      <div>
+        <h2>Fetched Graphs:</h2>
+        {fetchedGraphs.map((graph, index) => (
+          <button key={index} onClick={() => handleFetchFromServer(graph['@Id'])}>
+            {graph['@Title']}
+          </button>
+        ))}
+      </div>
+```

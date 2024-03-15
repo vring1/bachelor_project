@@ -40,10 +40,10 @@ def fetch_graphs_after_login():
     #return jsonify({'graphs': graphs})
     # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
     filtered_graphs = [graph for graph in graphs if
-                       "blood draw" == graph['@title'].lower() or
-                       "testing" == graph['@title'].lower() or
-                       "aaa" == graph['@title'].lower() or
-                       "dcr" == graph['@title'].lower()]
+                       "blood draw" == graph['@Title'].lower() or
+                       "testing" == graph['@Title'].lower() or
+                       "aaa" == graph['@Title'].lower() or
+                       "dcr" == graph['@Title'].lower()]
     
     return jsonify({'graphs': filtered_graphs})
 
@@ -52,22 +52,18 @@ def test_if_user_exists_in_dcr_and_add_to_database(): # Register
     graphs = data_fetcher.test_if_user_exists_in_dcr_and_add_to_database()
     if graphs is None:
         return jsonify(None)
-    #return jsonify({'graphs': graphs})
-    # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
-    filtered_graphs = [graph for graph in graphs if
-                       "blood draw" == graph['@title'].lower() or
-                       "testing" == graph['@title'].lower() or
-                       "aaa" == graph['@title'].lower() or
-                       "dcr" == graph['@title'].lower()]
+    return jsonify({'graphs': graphs})
 
-    return jsonify({'graphs': filtered_graphs})
-
-@app.route('/testIfUserExistsInDatabase', methods=['GET'])
+@app.route('/testIfUserExistsInDatabase', methods=['POST'])
 def test_if_user_exists_in_database(): # Login
-    user = data_fetcher.test_if_user_and_password_exists_in_database()
+    data = request.json
+    username = data['username']
+    password = data['password']
+    user = data_fetcher.test_if_user_and_password_exists_in_database(username, password)
     if user is None:
         return jsonify(None)
     return jsonify({'user': user})
+
 
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
