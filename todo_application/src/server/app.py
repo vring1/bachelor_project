@@ -169,6 +169,20 @@ def approve_role_request():
         return None
     return jsonify({'username': username, 'role': role})
 
+@app.route('/denyRoleRequest', methods=['POST'])
+def deny_role_request():
+    print("Denying role request")
+    username = request.json['username']
+    role = request.json['role']
+    try:
+        # Delete role request from database
+        data_fetcher.cursor.execute("DELETE FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+        data_fetcher.db.commit()
+        print("Role request deleted from database")
+    except Exception as e:
+        print("Error: ", e)
+        return None
+    return jsonify({'username': username, 'role': role})
 
 @app.route('/fetchRolesForUser', methods=['GET'])
 def fetch_roles_for_user():

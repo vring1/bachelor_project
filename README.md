@@ -18,6 +18,8 @@
 
 ### Urgent
 
+1. Lige nu skal feltet "nurse f.eks." skiftes før det virker. Det bliver ikke valgt som sådan igennem useeffect
+1. Luk og åben connection til database undervejs (SÅ KAN DU SLIPPE FOR TIMEOUTS I home.js!!!!) - du kan bruge mysql.connector.pooling
 1. KÆMPE REFACTOR!!!
 1. datafetcher har for mange responsibilities
 1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)

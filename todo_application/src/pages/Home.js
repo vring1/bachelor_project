@@ -28,6 +28,45 @@ function Home() {
   const [roles, setRoles] = useState([]); // State to store roles
   const [selectedRole, setSelectedRole] = useState(''); // State to store selected role
 
+  // State to store whether to check if user is admin
+  const [checkAdminInterval, setCheckAdminInterval] = useState(false);
+  const [checkRoleInterval, setCheckRoleInterval] = useState(false);
+
+  // Check if user is admin on component mount
+  useEffect(() => {
+    setCheckAdminInterval(true); // Set to true when the component mounts
+    return () => {
+      setCheckAdminInterval(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (checkAdminInterval) {
+      checkIfAdmin(); // Call checkIfAdmin when the component mounts
+      setTimeout(() => {
+        fetchRolesForUser();
+      }, 2000);
+      
+      //setTimeout(() => {
+      //  sendSelectedRole();
+      //}, 2000);
+      const interval = setInterval(() => {
+        checkIfAdmin(); // Call checkIfAdmin every 5 seconds
+        // wait 2 seconds before fetching role requests
+        setTimeout(() => {
+          fetchRolesForUser();
+        }, 2000);
+        // wait 2 seconds before sending selected role
+        //setTimeout(() => {
+        //  sendSelectedRole();
+        //}, 2000);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [checkAdminInterval]);
+
+  
+
   const checkIfAdmin = () => {
     fetch('http://localhost:5000/checkIfAdmin')
       .then(response => response.json())
@@ -72,6 +111,28 @@ function Home() {
   
 
   // Render role requests
+  //const renderRoleRequests = () => {
+  //  return (
+  //    <div>
+  //      <h2>Role Requests</h2>
+  //      <ul>
+  //        {requests.map((request, index) => (
+  //          <li key={index}>
+  //            Username: {request[1]}, Role: {request[2]}
+  //            {isAdmin && (
+  //              <button onClick={() => approveRoleRequest(request[1], request[2])}>
+  //                Approve
+  //              </button>
+  //              
+  //            )  
+  //            }
+  //          </li>
+  //        ))}
+  //      </ul>
+  //    </div>
+  //  );
+  //};
+  // Render role requests
   const renderRoleRequests = () => {
     return (
       <div>
@@ -81,9 +142,14 @@ function Home() {
             <li key={index}>
               Username: {request[1]}, Role: {request[2]}
               {isAdmin && (
-                <button onClick={() => approveRoleRequest(request[1], request[2])}>
-                  Approve
-                </button>
+                <div>
+                  <button onClick={() => approveRoleRequest(request[1], request[2])}>
+                    Approve
+                  </button>
+                  <button onClick={() => denyRoleRequest(request[1], request[2])}>
+                    Deny
+                  </button>
+                </div>
               )}
             </li>
           ))}
@@ -103,13 +169,28 @@ function Home() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data); // Log the response for debugging
-      // You may want to update the local state or fetch role requests again after approval
+      console.log(data); 
       fetchRoleRequests();
     })
     .catch(error => console.error(error));
   };
   
+  const denyRoleRequest = (username, role) => {
+    fetch('http://localhost:5000/denyRoleRequest', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, role })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data); 
+      fetchRoleRequests();
+    })
+    .catch(error => console.error(error));
+  };
+
 
 
   const handleSendMessage = () => {
@@ -139,6 +220,7 @@ function Home() {
   const requestRole = (e) => {
     e.preventDefault(); // Prevent default form submission
     const role = e.target.role.value; // Extract role from the form
+    e.target.role.value = ''; // Clear the role submit field
     console.log("Role: ", role);
     fetch('http://localhost:5000/requestRole', {
       method: 'POST', // Use POST method
@@ -173,9 +255,9 @@ function Home() {
           console.log('Roles fetched successfully');
           setRoles(data.roles); // Update state with fetched roles
           console.log('Roles:', roles);
-          if (data.roles.length > 0) {
-            setSelectedRole(data.roles[0]);
-          }
+          //if (data.roles.length > 0) {
+          //  setSelectedRole(data.roles[0]);
+          //}
         } else {
           console.log('No roles found');
         }
@@ -216,9 +298,9 @@ function Home() {
       <div>
         {/* Render admin component only if user is an admin */}
         {/* Button to check if is admin */}
-        <button className="button" onClick={checkIfAdmin}>
+        {/*<button className="button" onClick={checkIfAdmin}>
           Check if admin/fetch role requests
-        </button>
+  </button>*/}
         {isAdmin && <AdminComponent />}
       </div>
       <div>
@@ -227,7 +309,7 @@ function Home() {
           <label>Request a role:</label>
           <input type="text" name="role" />
           <br/>
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Submit"/>
         </form>
         <h3>Or choose a role:</h3>
         <select name="role" onChange={e => setSelectedRole(e.target.value)} value={selectedRole}>
@@ -240,7 +322,7 @@ function Home() {
           </button>
           <button className="button" onClick={handleFetchRolesClick}>
           Fetch Roles
-        </button>
+            </button>
       </div>
         
       <div>

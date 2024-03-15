@@ -98,6 +98,8 @@ class DataFetcher:
 
         # Translate XML to JSON dictionary
         events_json = xmltodict.parse(events_xml_clean)
+
+        print(events_json)
     
         if 'events' in events_json and 'event' in events_json['events']:
             events = events_json['events']['event']
