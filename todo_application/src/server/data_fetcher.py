@@ -2,6 +2,7 @@ import httpx
 import xmltodict
 from database_connector import DatabaseConnector
 from flask import request
+import uuid
 
 class DataFetcher:
     def __init__(self):
@@ -158,18 +159,13 @@ class DataFetcher:
     
     def test_if_user_and_password_exists_in_database(self, username, password):
         self.username = username
-        self.password = password
-        #self.username = request.args.get('username')
-        #self.password = request.args.get('password')
-        #self.cookie = request.cookies.get('loggedInUser')
-        #print("Cookie: ", self.cookie)
-        #user_cookie = request.cookies.get('user')
-        #print("User cookie: ", user_cookie)
-        
+        self.password = password    
         user = self.execute_query("SELECT * FROM users WHERE username = %s AND password = %s;", (self.username, self.password))
         if user:
             print("User exists in database")
         else:
             print("User does not exist in database")
             return None
-        return user
+        session_token = str(uuid.uuid4())
+        self.execute_query("UPDATE users SET session_token = %s WHERE username = %s;", (session_token, self.username))
+        return user, session_token

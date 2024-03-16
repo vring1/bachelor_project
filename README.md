@@ -13,12 +13,14 @@
 9. Session management (first big challenge)
 10. redis??
 11. Sudden change in DCR API - naming in json is capital instead of lower case.
+12. pooling
 
 ## TODO
 
 ### Urgent
 
-1. Luk og åben connection til database undervejs (SÅ KAN DU SLIPPE FOR TIMEOUTS I home.js!!!!) - du kan bruge mysql.connector.pooling
+1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
+1. Man kan approve den samme flere gange?? + den forsvinder ikke ???
 1. KÆMPE REFACTOR!!!
 1. datafetcher har for mange responsibilities
 1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)

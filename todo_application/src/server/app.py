@@ -7,7 +7,7 @@ from chat_handler import ChatHandler
 import openai
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 
 data_fetcher = DataFetcher()
@@ -54,16 +54,15 @@ def test_if_user_exists_in_dcr_and_add_to_database(): # Register
         return jsonify(None)
     return jsonify({'graphs': graphs})
 
-@app.route('/testIfUserExistsInDatabase', methods=['POST'])
+@app.route('/testIfUserExistsInDatabase', methods=['POST']) #generate session token
 def test_if_user_exists_in_database(): # Login
     data = request.json
     username = data['username']
     password = data['password']
-    user = data_fetcher.test_if_user_and_password_exists_in_database(username, password)
+    user, session_token = data_fetcher.test_if_user_and_password_exists_in_database(username, password)
     if user is None:
         return jsonify(None)
-    return jsonify({'user': user})
-
+    return jsonify({'user': user, 'session_token': session_token})
 
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
@@ -84,31 +83,61 @@ def perform_graph_event():
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
 
+#@app.route('/requestRole', methods=['POST'])
+#def request_role():
+#    print("Requesting role for user: ", data_fetcher.username)
+#    #username = request.args.get('username')
+#    role = request.json['role']
+#    try:
+#        # Add role request to database, but only if the user has not already requested that specific role
+#        req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
+#        print("Request: ", request)
+#        if req:
+#            print("User has already requested that role")
+#        else:
+#            # Add role request to database if it does not exist
+#            data_fetcher.execute_query("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
+#
+#    except Exception as e:
+#        print("Error: ", e)
+#        return None
+#    return jsonify({'username': data_fetcher.username, 'role': role})
 @app.route('/requestRole', methods=['POST'])
 def request_role():
-    print("Requesting role for user: ", data_fetcher.username)
-    #username = request.args.get('username')
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session_token)
     role = request.json['role']
-    try:
-        # Add role request to database, but only if the user has not already requested that specific role
-        req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
-        print("Request: ", request)
-        if req:
-            print("User has already requested that role")
-        else:
-            # Add role request to database if it does not exist
-            data_fetcher.execute_query("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
-
-    except Exception as e:
-        print("Error: ", e)
+    # find user from session token
+    user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+    if user:
+        print("User exists in database")
+        username = user[0][1]
+        print("Requesting role for user: ", username)
+        try:
+            # Add role request to database, but only if the user has not already requested that specific role
+            req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+            print("Request: ", request)
+            if req:
+                print("User has already requested that role")
+            else:
+                # Add role request to database if it does not exist
+                data_fetcher.execute_query("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (username, role))
+        except Exception as e:
+            print("Error: ", e)
+            return None
+        return jsonify({'username': username, 'role': role})
+    else:
+        print("User does not exist in database")
         return None
-    return jsonify({'username': data_fetcher.username, 'role': role})
+
 
 @app.route('/checkIfAdmin', methods=['GET'])
 def check_if_admin():
-    print("Checking if user is admin: ", data_fetcher.username)
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session_token)
     try:
-        user = data_fetcher.execute_query("SELECT * FROM users WHERE username = %s;", (data_fetcher.username,))
+        #user = data_fetcher.execute_query("SELECT * FROM users WHERE username = %s;", (data_fetcher.username,))
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         print("User: ", user)
         if user:
             print("User exists in database")
@@ -174,10 +203,13 @@ def deny_role_request():
 
 @app.route('/fetchRolesForUser', methods=['GET'])
 def fetch_roles_for_user():
-    username = data_fetcher.username
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session_token)
     try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
         # Query roles associated with the provided username
-        roles = data_fetcher.execute_query("SELECT role FROM roles WHERE username = %s;", (data_fetcher.username,))
+        roles = data_fetcher.execute_query("SELECT role FROM roles WHERE username = %s;", (username,))
         roles = [row[0] for row in roles] if roles else []
         return jsonify({'roles': roles}), 200
     except Exception as e:

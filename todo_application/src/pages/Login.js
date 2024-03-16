@@ -8,34 +8,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState(''); // State to store error message
   const navigate = useNavigate(); // Get navigate function
 
-  //const redirectToHome = (e) => {
-  //  e.preventDefault(); // Prevent default form submission
-  //  fetch(`http://localhost:5000/testIfUserExistsInDatabase?username=${username}&password=${password}`, {
-  //  method: 'GET',
-  //  //credentials: "include",
-  //  headers: {
-  //    'Content-Type': 'application/json'
-  //  }
-  //  })
-  //    .then(response => response.json())
-  //    .then(data => {
-  //      if (data === null) {
-  //        setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
-  //      } else if (data) { // could also be data.user
-  //        //document.cookie = `loggedInUser=${username};max-age=3600`; // Create a cookie with the username
-  //        navigate('/home'); // Redirect to /home upon successful login
-  //      } 
-  //      else {
-  //        setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
-  //      }
-  //      setUsername(''); // Clear username
-  //      setPassword(''); // Clear password
-  //    })
-  //    .catch(error => {
-  //      console.error(error);
-  //      setErrorMessage('An error occurred. Please try again later.'); // Set error message
-  //    });
-  //}
+
   const redirectToHome = (e) => {
     e.preventDefault();
     fetch('http://localhost:5000/testIfUserExistsInDatabase', {
@@ -45,13 +18,15 @@ function Login() {
       },
       body: JSON.stringify({ username, password }),
       //credentials: 'include',
-      credentials: 'same-origin',
+      credentials: 'include',
     })
       .then(response => response.json())
       .then(data => {
         if (data === null) {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net');
         } else if (data) {
+          document.cookie = `session_token=${data.session_token};path=/`;
+          console.log('session_token:', data.session_token);
           navigate('/home');
         } else {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net');

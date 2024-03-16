@@ -64,14 +64,6 @@ function Home() {
     }
   }, [checkAdminInterval, selectedRole]);
 
-  //useEffect(() => {
-  //  if (checkSendSelectedRoleInterval) {
-  //    const interval = setInterval(() => {
-  //      sendSelectedRole(); // Call sendSelectedRole every second
-  //    }, 1000);
-  //    return () => clearInterval(interval);
-  //  }
-  //}, [checkSendSelectedRoleInterval, selectedRole]);
 
   const handleRoleChange = (e) => {
     const newRole = e.target.value;
@@ -79,25 +71,52 @@ function Home() {
     sendSelectedRole(newRole);
   };
 
+  //const checkIfAdmin = () => {
+  //  fetch('http://localhost:5000/checkIfAdmin')
+  //    .then(response => response.json())
+  //    .then(data => {
+  //      console.log(data); // Log the response for debugging
+  //      // Assuming the response contains an 'admin' property indicating admin status
+  //      if (data.admin) {
+  //        console.log('User is admin');
+  //        setIsAdmin(true);
+  //        // Handle the case where the user is an admin
+  //        // Call fetchRoleRequests and renderRoleRequests when admin status is true
+  //        fetchRoleRequests();
+  //      } else {
+  //        console.log('User is not admin');
+  //        setIsAdmin(false);
+  //        // Handle the case where the user is not an admin
+  //      }
+  //    })
+  //    .catch(error => console.error(error));
+  //};
   const checkIfAdmin = () => {
-    fetch('http://localhost:5000/checkIfAdmin')
-      .then(response => response.json())
-      .then(data => {
+    fetch('http://localhost:5000/checkIfAdmin', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Cookie': document.cookie // Send the entire cookie value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
         console.log(data); // Log the response for debugging
         // Assuming the response contains an 'admin' property indicating admin status
         if (data.admin) {
-          console.log('User is admin');
-          setIsAdmin(true);
-          // Handle the case where the user is an admin
-          // Call fetchRoleRequests and renderRoleRequests when admin status is true
-          fetchRoleRequests();
+            console.log('User is admin');
+            setIsAdmin(true);
+            // Handle the case where the user is an admin
+            // Call fetchRoleRequests and renderRoleRequests when admin status is true
+            fetchRoleRequests();
         } else {
-          console.log('User is not admin');
-          setIsAdmin(false);
-          // Handle the case where the user is not an admin
+            console.log('User is not admin');
+            setIsAdmin(false);
+            // Handle the case where the user is not an admin
         }
-      })
-      .catch(error => console.error(error));
+    })
+    .catch(error => console.error(error));
   };
 
   
@@ -209,10 +228,13 @@ function Home() {
     const role = e.target.role.value; // Extract role from the form
     e.target.role.value = ''; // Clear the role submit field
     console.log("Role: ", role);
+    console.log("Document cookie: ", document.cookie);
     fetch('http://localhost:5000/requestRole', {
       method: 'POST', // Use POST method
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json' // Specify content type as JSON
+        'Content-Type': 'application/json', // Specify content type as JSON
+        'Cookie': document.cookie // Send cookies with the request
       },
       body: JSON.stringify({ role: role }) // Send role in the request body
     })
@@ -233,30 +255,62 @@ function Home() {
     );
   };
 
+  //const fetchRolesForUser = () => {
+  //  fetch('http://localhost:5000/fetchRolesForUser')
+  //    .then(response => response.json())
+  //    .then(data => {
+  //      console.log(data); // Log the response for debugging
+  //      if (data.roles) {
+  //        console.log('Roles fetched successfully');
+  //        setRoles(data.roles); // Update state with fetched roles
+  //        console.log('Roles:', roles);
+  //        //if (data.roles.length > 0) {
+  //        //  setSelectedRole(data.roles[0]);
+  //        //}
+  //        // Set role only if it's the initial fetch and roles are not empty
+  //        if (!initialRoleSelected && data.roles.length > 0) {
+  //          setSelectedRole(data.roles[0]);
+  //          setInitialRoleSelected(true); // Set initial role selection state
+  //        }
+  //      } else {
+  //        console.log('No roles found');
+  //      }
+  //    }
+  //    )
+  //    .catch(error => console.error(error));
+  //};
+
   const fetchRolesForUser = () => {
-    fetch('http://localhost:5000/fetchRolesForUser')
-      .then(response => response.json())
-      .then(data => {
+    fetch('http://localhost:5000/fetchRolesForUser', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Cookie': document.cookie // Send the entire cookie value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
         console.log(data); // Log the response for debugging
         if (data.roles) {
-          console.log('Roles fetched successfully');
-          setRoles(data.roles); // Update state with fetched roles
-          console.log('Roles:', roles);
-          //if (data.roles.length > 0) {
-          //  setSelectedRole(data.roles[0]);
-          //}
-          // Set role only if it's the initial fetch and roles are not empty
-          if (!initialRoleSelected && data.roles.length > 0) {
-            setSelectedRole(data.roles[0]);
-            setInitialRoleSelected(true); // Set initial role selection state
-          }
+            console.log('Roles fetched successfully');
+            setRoles(data.roles); // Update state with fetched roles
+            console.log('Roles:', roles);
+            //if (data.roles.length > 0) {
+            //  setSelectedRole(data.roles[0]);
+            //}
+            // Set role only if it's the initial fetch and roles are not empty
+            if (!initialRoleSelected && data.roles.length > 0) {
+                setSelectedRole(data.roles[0]);
+                setInitialRoleSelected(true); // Set initial role selection state
+            }
         } else {
-          console.log('No roles found');
+            console.log('No roles found');
         }
-      }
-      )
-      .catch(error => console.error(error));
-  };
+    })
+    .catch(error => console.error(error));
+};
+
 
     
   const handleFetchRolesClick = () => {
