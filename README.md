@@ -19,6 +19,7 @@
 
 ### Urgent
 
+1. register skal ikke sende én til home (så ville man også skulle generere cookie der)
 1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
 1. Man kan approve den samme flere gange?? + den forsvinder ikke ???
 1. KÆMPE REFACTOR!!!

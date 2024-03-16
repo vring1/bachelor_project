@@ -136,16 +136,16 @@ class DataFetcher:
         return filtered_events
 
 
-    def perform_event(self, event_id):
+    def perform_event(self, event_id, username, password):
         print('Performing event')
 
         url = (f"https://repository.dcrgraphs.net/api/graphs/{self.graph_id}/sims/"
             f"{self.simulation_id}/events/{event_id}")
-        httpx.post(url, auth=(self.username, self.password))
+        httpx.post(url, auth=(username, password))
 
         next_activities_response = httpx.get(
             f"https://repository.dcrgraphs.net/api/graphs/{self.graph_id}/sims/{self.simulation_id}/events?filter=only-enabled",
-            auth=(self.username, self.password)
+            auth=(username, password)
         )
 
         events_xml = next_activities_response.text
@@ -160,12 +160,12 @@ class DataFetcher:
     def test_if_user_and_password_exists_in_database(self, username, password):
         self.username = username
         self.password = password    
-        user = self.execute_query("SELECT * FROM users WHERE username = %s AND password = %s;", (self.username, self.password))
+        user = self.execute_query("SELECT * FROM users WHERE username = %s AND password = %s;", (username, password))
         if user:
             print("User exists in database")
         else:
             print("User does not exist in database")
             return None
         session_token = str(uuid.uuid4())
-        self.execute_query("UPDATE users SET session_token = %s WHERE username = %s;", (session_token, self.username))
+        self.execute_query("UPDATE users SET session_token = %s WHERE username = %s;", (session_token, username))
         return user, session_token

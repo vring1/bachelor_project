@@ -71,9 +71,20 @@ def fetch_data():
 
 @app.route('/performEvent', methods=['POST'])
 def perform_event():
-    event_id = request.json['event_id']
-    labels = data_fetcher.perform_event(event_id)
-    return jsonify({'labels': labels}) 
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session_token)
+    try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        password = user[0][2]
+        print("User: ", user)
+        event_id = request.json['event_id']
+        labels = data_fetcher.perform_event(event_id, username, password)
+    except Exception as e:
+        print("Error: ", e)
+        return None 
+    return jsonify({'labels': labels})
+    
 
 @app.route('/performGraphEvent', methods=['POST'])
 def perform_graph_event():
