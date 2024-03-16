@@ -1,23 +1,53 @@
 import React from 'react';
 
-const fetchFromServer = (id, setFetchedData, setGraphId) => {
-  //fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${id}&role=${role}`)
-  fetch(`http://localhost:5000/fetchData?graph_id=${id}`)
+//const fetchFromServer = (id, setFetchedData, setGraphId) => {
+//  //fetch(`http://localhost:5000/fetchData?username=${username}&password=${password}&graph_id=${id}&role=${role}`)
+//  fetch(`http://localhost:5000/fetchData?graph_id=${id}`)
+//    .then(response => response.json())
+//    .then(data => {
+//      console.log(data); // Add this line to inspect the fetched data in the console
+//      // Assuming data is an array and each item in the array has a 'label' property
+//      setFetchedData(data.labels); // Update state with fetched labels from the server
+//      setGraphId(id);
+//      console.log(data.labels);
+//    })
+//    .catch(error => console.error(error));
+//};
+
+
+const fetchFromServer = (id, setFetchedData, setGraphId, title, setTitle) => {
+  console.log("Document cookie: ", document.cookie);
+  fetch(`http://localhost:5000/fetchData?graph_id=${id}&title=${title}`, {
+    method: 'GET',
+    credentials: 'include', // Include credentials
+    headers: {
+      'Content-Type': 'application/json',
+      'Cookie': document.cookie // Send cookies with the request
+    },
+  })
     .then(response => response.json())
     .then(data => {
       console.log(data); // Add this line to inspect the fetched data in the console
       // Assuming data is an array and each item in the array has a 'label' property
       setFetchedData(data.labels); // Update state with fetched labels from the server
       setGraphId(id);
+      setTitle(title);
       console.log(data.labels);
     })
-    .catch(error => console.error(error));
+    .catch(error => console.error(error));  
 };
+
+
+
 const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
-  //fetch(`http://localhost:5000/fetchGraphs?username=${username}&password=${password}`)
+  console.log("Document cookie: ", document.cookie);
   fetch(`http://localhost:5000/fetchGraphsAfterLogin` , {
     method: 'GET',
-    //credentials: 'include' // Include credentials
+    credentials: 'include', // Include credentials
+    headers: {
+      'Content-Type': 'application/json',
+      'Cookie': document.cookie // Send cookies with the request
+    },
   })
     .then(response => response.json())
     .then(data => {
@@ -34,6 +64,11 @@ const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
     })
     .catch(error => console.error(error));
 }
+
+
+
+
+
 //const performEvent = (event_id, setFetchedData) => {
 //  // Make a POST request to perform the event
 //  fetch('http://localhost:5000/performEvent', {

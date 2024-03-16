@@ -19,6 +19,8 @@
 
 ### Urgent
 
+1. Få rettet de sidste self.etc. (mangler role og måske mere)
+1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal ikke sende én til home (så ville man også skulle generere cookie der)
 1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
 1. Man kan approve den samme flere gange?? + den forsvinder ikke ???

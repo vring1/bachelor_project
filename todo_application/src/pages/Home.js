@@ -14,6 +14,7 @@ function Home() {
   //const [password, setPassword] = useState('');
 
   const [graphId, setGraphId] = useState(null);
+  const [title, setTitle] = useState(null);
   //const [role, setRole] = useState('');
 
   const [message, setMessage] = useState('');
@@ -207,8 +208,8 @@ function Home() {
     sendMessageFromButton(msg, setResponse); // Call sendMessageFromButton function from imported chatbot functions
   };
 
-  const handleFetchFromServer = (id) => {
-    fetchFromServer(id, setFetchedData, setGraphId);
+  const handleFetchFromServer = (id, title) => {
+    fetchFromServer(id, setFetchedData, setGraphId, title, setTitle);
   };
   
   const handleFetchGraphs = () => {
@@ -403,7 +404,7 @@ function Home() {
       <div>
         <h2>Fetched Graphs:</h2>
         {fetchedGraphs.map((graph, index) => (
-          <button key={index} onClick={() => handleFetchFromServer(graph['@Id'])}>
+          <button key={index} onClick={() => handleFetchFromServer(graph['@Id'], graph['@Title'])}>
             {graph['@Title']}
           </button>
         ))}

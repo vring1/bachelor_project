@@ -34,17 +34,26 @@ def chat():
 
 @app.route('/fetchGraphsAfterLogin', methods=['GET'])
 def fetch_graphs_after_login():
-    graphs = data_fetcher.fetch_graphs_after_login()
-    if graphs is None:
-        return jsonify(None)
-    #return jsonify({'graphs': graphs})
-    # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
-    filtered_graphs = [graph for graph in graphs if
-                       "blood draw" == graph['@Title'].lower() or
-                       "testing" == graph['@Title'].lower() or
-                       "aaa" == graph['@Title'].lower() or
-                       "dcr" == graph['@Title'].lower()]
-    
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session)
+    try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        password = user[0][2]
+        print("User: ", user)
+        graphs = data_fetcher.fetch_graphs_after_login(username, password)
+        if graphs is None:
+            return jsonify(None)
+        #return jsonify({'graphs': graphs})
+        # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
+        filtered_graphs = [graph for graph in graphs if
+                           "blood draw" == graph['@Title'].lower() or
+                           "testing" == graph['@Title'].lower() or
+                           "aaa" == graph['@Title'].lower() or
+                           "dcr" == graph['@Title'].lower()]
+    except Exception as e:
+        print("Error in fetchGraphsAfterLogin: ", e)
+        return None
     return jsonify({'graphs': filtered_graphs})
 
 @app.route('/testIfUserExistsInDcrAndAddToDatabase', methods=['GET'])
@@ -66,7 +75,18 @@ def test_if_user_exists_in_database(): # Login
 
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
-    labels = data_fetcher.fetch_data()
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session)
+    try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        password = user[0][2]
+        print("User: ", user)
+        labels = data_fetcher.fetch_data(username, password)
+    #labels = data_fetcher.fetch_data()
+    except Exception as e:
+        print("Error: ", e)
+        return None
     return jsonify({'labels': labels})
 
 @app.route('/performEvent', methods=['POST'])
@@ -127,7 +147,7 @@ def request_role():
         try:
             # Add role request to database, but only if the user has not already requested that specific role
             req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (username, role))
-            print("Request: ", request)
+            #print("Request: ", request)
             if req:
                 print("User has already requested that role")
             else:

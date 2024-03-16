@@ -62,23 +62,26 @@ class DatabaseConnector:
                 for user in users:
                     print(user)
 
-                # Create a table for storing graphs
-                cursor.execute("CREATE TABLE IF NOT EXISTS graphs ("
+                # Create a table for storing active_graph_info
+                cursor.execute("CREATE TABLE IF NOT EXISTS active_graph_info ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY,"
                                     "graph_id INT NOT NULL,"
-                                    "graph_name VARCHAR(255) NOT NULL,"
                                     "simulation_id INT NOT NULL,"
-                                    "owner_id INT NOT NULL"
+                                    "graph_name VARCHAR(255) NOT NULL,"
+                                    "username VARCHAR(255) NOT NULL"
                                     ");")
+
+                # drop table
+                #cursor.execute("DROP TABLE IF EXISTS active_graph_info;")
 
                 # Delete all graphs from the table
                 #self.cursor.execute("DELETE FROM graphs;")
                 #self.db.commit()
 
                 # Select all graphs from the table
-                cursor.execute("SELECT * FROM graphs;")
+                cursor.execute("SELECT * FROM active_graph_info;")
                 graphs = cursor.fetchall()
-                print("Graphs: ")
+                print("Active graphs info: ")
                 for graph in graphs:
                     print(graph)
 
