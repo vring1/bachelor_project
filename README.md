@@ -18,7 +18,6 @@
 
 ### Urgent
 
-1. Lige nu skal feltet "nurse f.eks." skiftes før det virker. Det bliver ikke valgt som sådan igennem useeffect
 1. Luk og åben connection til database undervejs (SÅ KAN DU SLIPPE FOR TIMEOUTS I home.js!!!!) - du kan bruge mysql.connector.pooling
 1. KÆMPE REFACTOR!!!
 1. datafetcher har for mange responsibilities
@@ -64,7 +63,7 @@
 1. use mysql;
 1. show tables;
 1. describe user;
-1. update user set authentication_string=password('1111') where user='root';
+1. update user set authentication_string=password('password') where user='root';
 1. FLUSH PRIVILEGES;
 
 ## Spørgsmål / Noter til vejledning

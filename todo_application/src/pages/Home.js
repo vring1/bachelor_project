@@ -30,8 +30,10 @@ function Home() {
 
   // State to store whether to check if user is admin
   const [checkAdminInterval, setCheckAdminInterval] = useState(false);
-  const [checkRoleInterval, setCheckRoleInterval] = useState(false);
 
+  const [initialRoleSelected, setInitialRoleSelected] = useState(false); // State to track initial role selection
+
+  const [checkSendSelectedRoleInterval, setCheckSendSelectedRoleInterval] = useState(false);
   // Check if user is admin on component mount
   useEffect(() => {
     setCheckAdminInterval(true); // Set to true when the component mounts
@@ -41,31 +43,41 @@ function Home() {
   }, []);
 
   useEffect(() => {
+    setCheckSendSelectedRoleInterval(true); // Set to true when the component mounts
+    return () => {
+      setCheckSendSelectedRoleInterval(false);
+    };
+  }, []);
+
+  useEffect(() => {
     if (checkAdminInterval) {
-      checkIfAdmin(); // Call checkIfAdmin when the component mounts
-      setTimeout(() => {
-        fetchRolesForUser();
-      }, 2000);
-      
-      //setTimeout(() => {
-      //  sendSelectedRole();
-      //}, 2000);
+      fetchRolesForUser(); // Call checkIfAdmin when the component mounts
+      sendSelectedRole(selectedRole);
+      handleFetchGraphs();
+      checkIfAdmin();
+    
       const interval = setInterval(() => {
         checkIfAdmin(); // Call checkIfAdmin every 5 seconds
-        // wait 2 seconds before fetching role requests
-        setTimeout(() => {
-          fetchRolesForUser();
-        }, 2000);
-        // wait 2 seconds before sending selected role
-        //setTimeout(() => {
-        //  sendSelectedRole();
-        //}, 2000);
+        fetchRolesForUser();
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [checkAdminInterval]);
+  }, [checkAdminInterval, selectedRole]);
 
-  
+  //useEffect(() => {
+  //  if (checkSendSelectedRoleInterval) {
+  //    const interval = setInterval(() => {
+  //      sendSelectedRole(); // Call sendSelectedRole every second
+  //    }, 1000);
+  //    return () => clearInterval(interval);
+  //  }
+  //}, [checkSendSelectedRoleInterval, selectedRole]);
+
+  const handleRoleChange = (e) => {
+    const newRole = e.target.value;
+    setSelectedRole(newRole);
+    sendSelectedRole(newRole);
+  };
 
   const checkIfAdmin = () => {
     fetch('http://localhost:5000/checkIfAdmin')
@@ -108,31 +120,6 @@ function Home() {
   };
   
   
-  
-
-  // Render role requests
-  //const renderRoleRequests = () => {
-  //  return (
-  //    <div>
-  //      <h2>Role Requests</h2>
-  //      <ul>
-  //        {requests.map((request, index) => (
-  //          <li key={index}>
-  //            Username: {request[1]}, Role: {request[2]}
-  //            {isAdmin && (
-  //              <button onClick={() => approveRoleRequest(request[1], request[2])}>
-  //                Approve
-  //              </button>
-  //              
-  //            )  
-  //            }
-  //          </li>
-  //        ))}
-  //      </ul>
-  //    </div>
-  //  );
-  //};
-  // Render role requests
   const renderRoleRequests = () => {
     return (
       <div>
@@ -258,6 +245,11 @@ function Home() {
           //if (data.roles.length > 0) {
           //  setSelectedRole(data.roles[0]);
           //}
+          // Set role only if it's the initial fetch and roles are not empty
+          if (!initialRoleSelected && data.roles.length > 0) {
+            setSelectedRole(data.roles[0]);
+            setInitialRoleSelected(true); // Set initial role selection state
+          }
         } else {
           console.log('No roles found');
         }
@@ -271,15 +263,15 @@ function Home() {
     fetchRolesForUser();
   };
 
-  const sendSelectedRole = () => {
-    console.log('Selected role:', selectedRole);
-    if (selectedRole) {
+  const sendSelectedRole = (role) => {
+    console.log('Selected role:', role);
+    if (role) {
       fetch('http://localhost:5000/setDatafetcherRole', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ role: selectedRole })
+        body: JSON.stringify({ role: role })
       })
       .then(response => response.json())
       .then(data => {
@@ -312,23 +304,28 @@ function Home() {
           <input type="submit" value="Submit"/>
         </form>
         <h3>Or choose a role:</h3>
-        <select name="role" onChange={e => setSelectedRole(e.target.value)} value={selectedRole}>
+        {/*<select name="role" onChange={e => setSelectedRole(e.target.value)} value={selectedRole}>
             {roles.map((role, index) => (
               <option key={index} value={role}>{role}</option>
             ))}
+          </select>*/}
+          <select name="role" onChange={handleRoleChange} value={selectedRole}>
+            {roles.map((role, index) => (
+            <option key={index} value={role}>{role}</option>
+            ))}
           </select>
-          <button className="button" onClick={sendSelectedRole}>
+          {/*<button className="button" onClick={sendSelectedRole}>
           Send Selected Role
           </button>
           <button className="button" onClick={handleFetchRolesClick}>
           Fetch Roles
-            </button>
+            </button>*/}
       </div>
         
       <div>
-        <button className="button" onClick={handleFetchGraphs}>
+        {/*<button className="button" onClick={handleFetchGraphs}>
           Fetch graphs
-        </button>
+        </button>*/}
         {/* Render error message if fetch attempt fails */}
         {errorMessage && (
           <div>

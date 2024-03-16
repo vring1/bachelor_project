@@ -91,14 +91,21 @@ def request_role():
     role = request.json['role']
     try:
         # Add role request to database, but only if the user has not already requested that specific role
-        req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
+        data_fetcher.cursor.execute("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
+        req = data_fetcher.cursor.fetchone()
         print("Request: ", request)
-        if req:
+        if req is not None:
             print("User has already requested that role")
         else:
             # Add role request to database if it does not exist
-            data_fetcher.execute_query("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
+            try:
+                data_fetcher.cursor.execute("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
+                data_fetcher.db.commit()
+                print("Role request added to database")
 
+            except Exception as e:
+                print("Error: ", e)
+                return None
     except Exception as e:
         print("Error: ", e)
         return None
@@ -108,11 +115,12 @@ def request_role():
 def check_if_admin():
     print("Checking if user is admin: ", data_fetcher.username)
     try:
-        user = data_fetcher.execute_query("SELECT * FROM users WHERE username = %s;", (data_fetcher.username,))
+        data_fetcher.cursor.execute("SELECT * FROM users WHERE username = %s;", (data_fetcher.username,))
+        user = data_fetcher.cursor.fetchone()
         print("User: ", user)
-        if user:
+        if user is not None:
             print("User exists in database")
-            if user[0][3] == 1:
+            if user[3] == 1:
                 print("User is admin")
                 return jsonify({'admin': True})
             else:
@@ -129,9 +137,10 @@ def check_if_admin():
 def fetch_role_requests():
     print("Fetching role requests")
     try:
-        requests = data_fetcher.execute_query("SELECT * FROM role_requests;")
+        data_fetcher.cursor.execute("SELECT * FROM role_requests;")
+        requests = data_fetcher.cursor.fetchall()
         print("Requests: ", requests)
-        if requests:
+        if requests is not None:
             print("Requests exist in database")
             return jsonify({'requests': requests})
         else:
@@ -148,10 +157,12 @@ def approve_role_request():
     role = request.json['role']
     try:
         # Add role to user in database
-        data_fetcher.execute_query("INSERT INTO roles (role, username) VALUES (%s, %s);", (role, username))
+        data_fetcher.cursor.execute("INSERT INTO roles (role, username) VALUES (%s, %s);", (role, username))
+        data_fetcher.db.commit()
         print("Role added to user in database")
         # Delete role request from database
-        data_fetcher.execute_query("DELETE FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+        data_fetcher.cursor.execute("DELETE FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+        data_fetcher.db.commit()
         print("Role request deleted from database")
     except Exception as e:
         print("Error: ", e)
@@ -165,7 +176,8 @@ def deny_role_request():
     role = request.json['role']
     try:
         # Delete role request from database
-        data_fetcher.execute_query("DELETE FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+        data_fetcher.cursor.execute("DELETE FROM role_requests WHERE username = %s AND role = %s;", (username, role))
+        data_fetcher.db.commit()
         print("Role request deleted from database")
     except Exception as e:
         print("Error: ", e)
@@ -176,9 +188,11 @@ def deny_role_request():
 def fetch_roles_for_user():
     username = data_fetcher.username
     try:
+        cursor = data_fetcher.cursor
         # Query roles associated with the provided username
-        roles = data_fetcher.execute_query("SELECT role FROM roles WHERE username = %s;", (data_fetcher.username,))
-        roles = [row[0] for row in roles] if roles else []
+        cursor.execute("SELECT role FROM roles WHERE username = %s;", (username,))
+        roles = [row[0] for row in cursor.fetchall()]  # Extract roles from the result set
+
         return jsonify({'roles': roles}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
