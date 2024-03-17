@@ -15,7 +15,7 @@ function SignUp() {
         if (data === null) {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
         } else if (data.graphs) {
-          navigate('/home'); // Redirect to /home upon successful registration
+          navigate('/'); // Redirect to / upon successful registration
         } 
         else {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message

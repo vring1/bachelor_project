@@ -6,12 +6,7 @@ import uuid
 
 class DataFetcher:
     def __init__(self):
-        #self.username = None
-        #self.password = None
-        self.role = None
         self.db = DatabaseConnector()
-        #self.cursor = self.db.get_cursor()
-        self.simulation_id = None
 
     def acquire_connection(self):
         try:
@@ -45,11 +40,8 @@ class DataFetcher:
 
     # Add data fetching and processing methods here
     def test_if_user_exists_in_dcr_and_add_to_database(self):
-        #self.username = request.args.get('username')
-        #self.password = request.args.get('password')
         username = request.args.get('username')
         password = request.args.get('password')
-        self.role = None#'Nurse'#request.args.get('role') # role will be none, as role is not choosen when registering
         if username == "valdemarring1@gmail.com":
             admin = True
         else:
@@ -79,9 +71,6 @@ class DataFetcher:
         return graphs_json['graphs']['graph']
     
     def fetch_graphs_after_login(self, username, password):
-
-        #if self.username is None:
-        #    return None
         graphs = httpx.get(
             url=f"https://repository.dcrgraphs.net/api/graphs?sort=title",
             auth=(username, password)
@@ -104,22 +93,9 @@ class DataFetcher:
         
         simulation_id = newsim_response.headers.get('simulationID')
         
-        # Insert graph_id and simulation_id into database
-        #cursor.execute("CREATE TABLE IF NOT EXISTS active_graph_info ("
-        #                            "id INT AUTO_INCREMENT PRIMARY KEY,"
-        #                            "graph_id INT NOT NULL,"
-        #                            "simulation_id INT NOT NULL,"
-        #                            "graph_name VARCHAR(255) NOT NULL,"
-        #                            "username VARCHAR(255) NOT NULL"
-        #                            ");")
         self.execute_query("INSERT INTO active_graph_info (graph_id, simulation_id, graph_name, username) VALUES (%s, %s, %s, %s);", (graph_id, simulation_id, graph_name, username))
-        # Print table
-        #table = self.execute_query("SELECT * FROM active_graph_info;")
-        #print("Active graphs info HERE: ")
-        #for row in table:
-        #    print(row)
         
-
+        
         # Make a GET request to fetch events for the simulation
         next_activities_response = httpx.get(
             f"https://repository.dcrgraphs.net/api/graphs/{graph_id}/sims/{simulation_id}/events?filter=only-enabled",
@@ -136,12 +112,18 @@ class DataFetcher:
 
         #print(events_json)
     
+        # find role of user in database
+        role = self.execute_query("SELECT current_role FROM users WHERE username = %s;", (username,))[0][0]
+        print("Role in fetch data!: ", role)
+
+
+
         if 'events' in events_json and 'event' in events_json['events']:
             events = events_json['events']['event']
             if isinstance(events, list):
-                filtered_events = [event for event in events if event.get('@roles') == self.role]
+                filtered_events = [event for event in events if event.get('@roles') == role]
             elif isinstance(events, dict):
-                filtered_events = [events] if events.get('@roles') == self.role else []
+                filtered_events = [events] if events.get('@roles') == role else []
             else:
                 filtered_events = []
         else:
@@ -172,13 +154,15 @@ class DataFetcher:
         events_xml_clean = events_xml_no_quotes.replace('\\\"', "\"")
         events_json = xmltodict.parse(events_xml_clean)
 
-        filtered_events = [event for event in events_json['events']['event'] if event['@roles'] == self.role]
+        # find role of user in database
+        role = self.execute_query("SELECT current_role FROM users WHERE username = %s;", (username,))[0][0]
+        print("Role in perform event!: ", role)
+
+        filtered_events = [event for event in events_json['events']['event'] if event['@roles'] == role]
         
         return filtered_events
     
     def test_if_user_and_password_exists_in_database(self, username, password):
-        #self.username = username
-        #self.password = password    
         user = self.execute_query("SELECT * FROM users WHERE username = %s AND password = %s;", (username, password))
         if user:
             print("User exists in database")

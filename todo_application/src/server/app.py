@@ -114,25 +114,6 @@ def perform_graph_event():
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
 
-#@app.route('/requestRole', methods=['POST'])
-#def request_role():
-#    print("Requesting role for user: ", data_fetcher.username)
-#    #username = request.args.get('username')
-#    role = request.json['role']
-#    try:
-#        # Add role request to database, but only if the user has not already requested that specific role
-#        req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (data_fetcher.username, role))
-#        print("Request: ", request)
-#        if req:
-#            print("User has already requested that role")
-#        else:
-#            # Add role request to database if it does not exist
-#            data_fetcher.execute_query("INSERT INTO role_requests (username, role) VALUES (%s, %s);", (data_fetcher.username, role))
-#
-#    except Exception as e:
-#        print("Error: ", e)
-#        return None
-#    return jsonify({'username': data_fetcher.username, 'role': role})
 @app.route('/requestRole', methods=['POST'])
 def request_role():
     session_token = request.headers.get('Cookie').split('=')[1]
@@ -167,7 +148,6 @@ def check_if_admin():
     session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token: ", session_token)
     try:
-        #user = data_fetcher.execute_query("SELECT * FROM users WHERE username = %s;", (data_fetcher.username,))
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         print("User: ", user)
         if user:
@@ -246,8 +226,31 @@ def fetch_roles_for_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@app.route('/setDatafetcherRole', methods=['POST'])
-def set_data_fetcher_role():
+@app.route('/setCurrentRole', methods=['POST'])
+def set_current_role():
     role = request.json['role']
-    data_fetcher.role = role
+    print("ROLE FROM REQUEST: ", role)
+    # set role in user table
+    session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token: ", session_token)
+    try:
+        print("ROLE FROM REQUEST 2: ", role)
+
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        print("ROLE FROM REQUEST 3: ", role)
+
+        print("USERNAME IN SET_CURRENT_ROLE: ", username)
+        data_fetcher.execute_query("UPDATE users SET current_role = %s WHERE username = %s;", (role, username))
+        # select and print role
+        print("ROLE FROM REQUEST 4: ", role)
+
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        print("ROLE FROM REQUEST 5: ", role)
+        role = user[0][5]
+        print("set_current_role: ", role)
+    except Exception as e:
+        print("Error: ", e)
+        return None
+        
     return jsonify({'role': role})

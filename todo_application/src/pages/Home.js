@@ -321,10 +321,12 @@ function Home() {
   const sendSelectedRole = (role) => {
     console.log('Selected role:', role);
     if (role) {
-      fetch('http://localhost:5000/setDatafetcherRole', {
+      fetch('http://localhost:5000/setCurrentRole', {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Cookie': document.cookie // Send cookies with the request
         },
         body: JSON.stringify({ role: role })
       })

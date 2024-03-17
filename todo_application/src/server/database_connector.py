@@ -44,7 +44,8 @@ class DatabaseConnector:
                                "username VARCHAR(255) NOT NULL UNIQUE,"
                                "password VARCHAR(255) NOT NULL,"
                                "admin BOOLEAN,"
-                               "session_token VARCHAR(255)"
+                               "session_token VARCHAR(255),"
+                               "current_role VARCHAR(50)"
                                ");")
                 
                 # drop table
