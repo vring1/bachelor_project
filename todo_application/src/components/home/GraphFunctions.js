@@ -22,7 +22,8 @@ const fetchFromServer = (id, setFetchedData, setGraphId, title, setTitle) => {
     credentials: 'include', // Include credentials
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': document.cookie // Send cookies with the request
+      //'Cookie': document.cookie // Send cookies with the request
+      'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
     },
   })
     .then(response => response.json())
@@ -46,7 +47,8 @@ const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
     credentials: 'include', // Include credentials
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': document.cookie // Send cookies with the request
+      //'Cookie': document.cookie // Send cookies with the request
+      'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
     },
   })
     .then(response => response.json())
@@ -66,31 +68,6 @@ const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
 }
 
 
-
-
-
-//const performEvent = (event_id, setFetchedData) => {
-//  // Make a POST request to perform the event
-//  fetch('http://localhost:5000/performEvent', {
-//    method: 'POST',
-//    headers: {
-//      'Content-Type': 'application/json'
-//    },
-//    body: JSON.stringify({ event_id: event_id })
-//  })
-//  .then(response => response.json())
-//  .then(data => {
-//    console.log(data); // You can handle the response here if needed
-//    setFetchedData(data.labels);
-//    //checkPendingTasks(graphId); // Check if there are any pending tasks
-//    // Check if there are any pending tasks
-//    //if (data.labels.length === 0) {
-//    //  alert('No more pending tasks!');
-//    //}
-//  })
-//  .catch(error => console.error(error));
-//};
-
 const performEvent = (event_id, setFetchedData) => {
   // Make a POST request to perform the event
   console.log("Document cookie: ", document.cookie);
@@ -99,7 +76,8 @@ const performEvent = (event_id, setFetchedData) => {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': document.cookie // Send cookies with the request
+      //'Cookie': document.cookie // Send cookies with the request
+      'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
     },
     body: JSON.stringify({ event_id: event_id })
   })

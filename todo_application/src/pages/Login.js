@@ -29,8 +29,9 @@ function Login() {
           //document.cookie.split(";").forEach(cookie => {
           //  document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
           //});
-          document.cookie = `session_token=${data.session_token};path=/`;
-          //document.cookie = `user_${data.username}_session_token=${data.session_token};path=/`;
+          //document.cookie = `session_token=${data.session_token};path=/`;
+          sessionStorage.setItem('session_token', data.session_token);
+
           console.log('session_token:', data.session_token);
           navigate('/home');
         } else {

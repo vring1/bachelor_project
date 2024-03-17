@@ -34,9 +34,10 @@ def chat():
 
 @app.route('/fetchGraphsAfterLogin', methods=['GET'])
 def fetch_graphs_after_login():
-    print("fetch_graphs_after_login COOKIE: ",request.headers.get('Cookie'))
-    session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session)
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    print("Session token fetch graphs after login: ", session_token)
+    #print("fetch_graphs_after_login COOKIE: ",request.headers.get('Cookie'))
+    #session_token = request.headers.get('Cookie').split('=')[1]
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         username = user[0][1]
@@ -81,8 +82,9 @@ def test_if_user_exists_in_database(): # Login
 
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
-    session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session)
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    #session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token fetchdata: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         username = user[0][1]
@@ -97,8 +99,9 @@ def fetch_data():
 
 @app.route('/performEvent', methods=['POST'])
 def perform_event():
-    session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session_token)
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    #session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token perform event: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         username = user[0][1]
@@ -116,14 +119,15 @@ def perform_event():
 def perform_graph_event():
     event_id = request.json['event_id']
     graph_id = request.json['graph_id']
-    data_fetcher.graph_id = graph_id
+    #data_fetcher.graph_id = graph_id
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
 
 @app.route('/requestRole', methods=['POST'])
 def request_role():
-    session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session_token)
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    #session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token request role: ", session_token)
     role = request.json['role']
     # find user from session token
     user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
@@ -151,8 +155,9 @@ def request_role():
 
 @app.route('/checkIfAdmin', methods=['GET'])
 def check_if_admin():
-    session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session_token)
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    #session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token check if admin: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         print("User: ", user)
@@ -220,7 +225,8 @@ def deny_role_request():
 
 @app.route('/fetchRolesForUser', methods=['GET'])
 def fetch_roles_for_user():
-    session_token = request.headers.get('Cookie').split('=')[1]
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token fetch roles for user: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
@@ -239,8 +245,9 @@ def set_current_role():
     role = request.json['role']
     print("ROLE FROM REQUEST: ", role)
     # set role in user table
-    session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session_token)
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    #session_token = request.headers.get('Cookie').split('=')[1]
+    print("Session token set current role: ", session_token)
     try:
         print("ROLE FROM REQUEST 2: ", role)
 

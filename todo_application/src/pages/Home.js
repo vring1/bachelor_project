@@ -79,7 +79,8 @@ function Home() {
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Cookie': document.cookie // Send the entire cookie value
+            //'Cookie': document.cookie // Send the entire cookie value
+            'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
         }
     })
     .then(response => response.json())
@@ -216,7 +217,8 @@ function Home() {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json', // Specify content type as JSON
-        'Cookie': document.cookie // Send cookies with the request
+        //'Cookie': document.cookie // Send cookies with the request
+        'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
       },
       body: JSON.stringify({ role: role }) // Send role in the request body
     })
@@ -237,38 +239,14 @@ function Home() {
     );
   };
 
-  //const fetchRolesForUser = () => {
-  //  fetch('http://localhost:5000/fetchRolesForUser')
-  //    .then(response => response.json())
-  //    .then(data => {
-  //      console.log(data); // Log the response for debugging
-  //      if (data.roles) {
-  //        console.log('Roles fetched successfully');
-  //        setRoles(data.roles); // Update state with fetched roles
-  //        console.log('Roles:', roles);
-  //        //if (data.roles.length > 0) {
-  //        //  setSelectedRole(data.roles[0]);
-  //        //}
-  //        // Set role only if it's the initial fetch and roles are not empty
-  //        if (!initialRoleSelected && data.roles.length > 0) {
-  //          setSelectedRole(data.roles[0]);
-  //          setInitialRoleSelected(true); // Set initial role selection state
-  //        }
-  //      } else {
-  //        console.log('No roles found');
-  //      }
-  //    }
-  //    )
-  //    .catch(error => console.error(error));
-  //};
-
   const fetchRolesForUser = () => {
     fetch('http://localhost:5000/fetchRolesForUser', {
         method: 'GET',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Cookie': document.cookie // Send the entire cookie value
+            //'Cookie': document.cookie // Send the entire cookie value
+            'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
         }
     })
     .then(response => response.json())
@@ -307,7 +285,8 @@ function Home() {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Cookie': document.cookie // Send cookies with the request
+          //'Cookie': document.cookie // Send cookies with the request
+          'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
         },
         body: JSON.stringify({ role: role })
       })
