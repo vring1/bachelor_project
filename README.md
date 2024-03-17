@@ -19,6 +19,7 @@
 
 ### Urgent
 
+1. ny session skal startes i nyt vindue (ikke kun i anden browser)
 1. Få rettet de sidste self.etc. (mangler role og måske mere)
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess

@@ -30,6 +30,7 @@ function Login() {
           //  document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
           //});
           document.cookie = `session_token=${data.session_token};path=/`;
+          //document.cookie = `user_${data.username}_session_token=${data.session_token};path=/`;
           console.log('session_token:', data.session_token);
           navigate('/home');
         } else {

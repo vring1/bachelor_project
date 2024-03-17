@@ -171,4 +171,9 @@ class DataFetcher:
             return None
         session_token = str(uuid.uuid4())
         self.execute_query("UPDATE users SET session_token = %s WHERE username = %s;", (session_token, username))
+
+        user = self.execute_query("SELECT * FROM users WHERE username = %s;", (username,))[0] # NEW!!!
+        print("User in test_if_user_and_password_exists_in_database: ", user)
         return user, session_token
+    
+

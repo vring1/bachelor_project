@@ -72,26 +72,7 @@ function Home() {
     sendSelectedRole(newRole);
   };
 
-  //const checkIfAdmin = () => {
-  //  fetch('http://localhost:5000/checkIfAdmin')
-  //    .then(response => response.json())
-  //    .then(data => {
-  //      console.log(data); // Log the response for debugging
-  //      // Assuming the response contains an 'admin' property indicating admin status
-  //      if (data.admin) {
-  //        console.log('User is admin');
-  //        setIsAdmin(true);
-  //        // Handle the case where the user is an admin
-  //        // Call fetchRoleRequests and renderRoleRequests when admin status is true
-  //        fetchRoleRequests();
-  //      } else {
-  //        console.log('User is not admin');
-  //        setIsAdmin(false);
-  //        // Handle the case where the user is not an admin
-  //      }
-  //    })
-  //    .catch(error => console.error(error));
-  //};
+ 
   const checkIfAdmin = () => {
     fetch('http://localhost:5000/checkIfAdmin', {
         method: 'GET',

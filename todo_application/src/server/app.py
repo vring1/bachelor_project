@@ -57,6 +57,9 @@ def fetch_graphs_after_login():
         return None
     return jsonify({'graphs': filtered_graphs})
 
+
+
+
 @app.route('/testIfUserExistsInDcrAndAddToDatabase', methods=['GET'])
 def test_if_user_exists_in_dcr_and_add_to_database(): # Register
     graphs = data_fetcher.test_if_user_exists_in_dcr_and_add_to_database()
@@ -72,7 +75,9 @@ def test_if_user_exists_in_database(): # Login
     user, session_token = data_fetcher.test_if_user_and_password_exists_in_database(username, password)
     if user is None:
         return jsonify(None)
+    #return jsonify({'user': user, 'session_token': session_token})
     return jsonify({'user': user, 'session_token': session_token})
+
 
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
@@ -216,7 +221,7 @@ def deny_role_request():
 @app.route('/fetchRolesForUser', methods=['GET'])
 def fetch_roles_for_user():
     session_token = request.headers.get('Cookie').split('=')[1]
-    print("Session token: ", session_token)
+    print("Session token fetch roles for user: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         username = user[0][1]
@@ -226,6 +231,8 @@ def fetch_roles_for_user():
         return jsonify({'roles': roles}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
     
 @app.route('/setCurrentRole', methods=['POST'])
 def set_current_role():
