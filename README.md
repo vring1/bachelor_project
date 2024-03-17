@@ -19,8 +19,6 @@
 
 ### Urgent
 
-1. ny session skal startes i nyt vindue (ikke kun i anden browser)
-1. Få rettet de sidste self.etc. (mangler role og måske mere)
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess
 1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
@@ -29,11 +27,8 @@
 1. datafetcher har for mange responsibilities
 1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)
 1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
-1. MÅSKE FUCK SESSION OG KLAR ALT GENNEM DATABASE?? SÅ HVER GANG DER TRYKKES TJEK I DATABASEN HVOR USERNAME MATCHER F.EKS.
-1. Få session til at virke - indebærer ordentligt register/login logik.
 1. /home skal måske ikke kunne tilgås hvis man ikke er logget ind.
 1. database sættes op, så graf navne / id kan hentes I stedet for hard coded
-1. logout skal have en metode
 
 ### Other
 
