@@ -34,6 +34,7 @@ def chat():
 
 @app.route('/fetchGraphsAfterLogin', methods=['GET'])
 def fetch_graphs_after_login():
+    print("fetch_graphs_after_login COOKIE: ",request.headers.get('Cookie'))
     session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token: ", session)
     try:

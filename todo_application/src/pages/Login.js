@@ -25,6 +25,10 @@ function Login() {
         if (data === null) {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net');
         } else if (data) {
+          // Clear existing cookies
+          //document.cookie.split(";").forEach(cookie => {
+          //  document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+          //});
           document.cookie = `session_token=${data.session_token};path=/`;
           console.log('session_token:', data.session_token);
           navigate('/home');

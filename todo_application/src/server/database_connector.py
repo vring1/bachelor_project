@@ -137,6 +137,13 @@ class DatabaseConnector:
                 # insert into users
                 #self.cursor.execute("INSERT INTO users (username, password, admin) VALUES ('valdemarring1@gmail.com', 'valdemar123', 1);")
                 #self.db.commit()
+                    
+                # drop all tables
+                #cursor.execute("DROP TABLE IF EXISTS users;")
+                #cursor.execute("DROP TABLE IF EXISTS active_graph_info;")
+                #cursor.execute("DROP TABLE IF EXISTS role_requests;")
+                #cursor.execute("DROP TABLE IF EXISTS roles;")
+                
                 
                 connection.commit()
                 cursor.close()
