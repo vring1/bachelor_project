@@ -159,6 +159,7 @@ function Home() {
     .then(response => response.json())
     .then(data => {
       console.log(data); 
+      setRequests(prevRequests => prevRequests.filter(request => request[1] !== username && request[2] !== role));
       fetchRoleRequests();
     })
     .catch(error => console.error(error));
@@ -174,7 +175,8 @@ function Home() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data); 
+      console.log(data);
+      setRequests(prevRequests => prevRequests.filter(request => request[1] !== username && request[2] !== role));
       fetchRoleRequests();
     })
     .catch(error => console.error(error));
