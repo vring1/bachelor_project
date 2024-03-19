@@ -14,11 +14,13 @@
 10. redis??
 11. Sudden change in DCR API - naming in json is capital instead of lower case.
 12. pooling
+13. Hele sessionen er baseret på den cookie og dermed behov for forskellige browsers, eftersom cookies er i hele browsersessionen (gem det som problem i opgaven)
 
 ## TODO
 
 ### Urgent
 
+1. Man skal kunne lave graf gennem app’en er næste skridt. Skridtet efter er at konkret bruge chatgpt til at give information til app-kreering
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess
 1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
