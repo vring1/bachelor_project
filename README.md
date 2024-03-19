@@ -70,19 +70,34 @@
 ## Spørgsmål / Noter til vejledning
 
 1. Hvordan skal rapport sættes op? - Disposition...
-   - Omfang???v
+
+   - Omfang??? Introduktion (motivér opgaven)
+     Bagggrundsinformation (DCR, ChatGPT)
+
+     Analyse:
+     Hvad er problemet og hvilke tekonologier er til rådighed?
+     deklarativ vs imperativ
+     process aware information systems
+     Hvad er det man prøver at løse? - sikkerhed, lovgivning
+
+     Design/implementering: - Test.. (ikke kun manuelt testet) - Fremhæv overordnet design - Fremhæv dele af kode (ChatGPT API og DCR API f.eks.) - Design patterns & principper (solid)? - Objektorienteret programmering in general - Koden kan vedligheholdes på baggrund af principper etc.
+
+     Diskussion:
+     Fordele og ulemper - ved APIAbility to - chatGPT - deklarativ vs imperativ
+     Hvad mangler? Hvis det var en rigtig app - GDPR
+     Hvilke udfordringer har der været
+     Hver er gode ting man har fundet
+
+     Appendix:
+     Vejledning til kørsel etc.
+     Vis vejledning til brug af DCR
+     Link til github og kode i appendix
+
    - Declarative vs imperativ
    - Brug af API (fordele ulemper) -f.eks. begrænsede muligehder fra udbyder
    - App'en skal testes (dokumentation på det)
    - Kode i appendix og online
-2. Indhold til rapport?
-
-   - Gennemgang af kode og processen med udvikling?
-   - Skal beskrive opbygningen af app'en (herunder især anvendelsen af de to API'er)
-
-3. Teori?
-   - Design patterns & principper (solid)?
-   - Objektorienteret programmering in general
+     Valdemar API bachelorprojekt (del overleaf dokument (find template måske))
 
 ## Opgavebeskrivelse
 
