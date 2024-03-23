@@ -10,7 +10,7 @@
 6. API calls cost money
 7. pip install mysql-connector-python
 8. if the server is restarted midsession, the user is still on the home page, but cant use anything
-9. Session management (first big challenge)
+9. Session management (first big challenge) - localstorage
 10. redis??
 11. Sudden change in DCR API - naming in json is capital instead of lower case.
 12. pooling

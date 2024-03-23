@@ -1,40 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './../App.css';
 import { sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
 import { fetchFromServer, fetchGraphs, performEvent, clearEvents } from '../components/home/GraphFunctions'; // Import server functions
 
 function Home() {
-  const [fetchedData, setFetchedData] = useState([]);
-  const [fetchedGraphs, setFetchedGraphs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(''); // State to store error message
+  const [fetchedData, setFetchedData] = useState([]); // State to store fetched events
+  const [fetchedGraphs, setFetchedGraphs] = useState([]); // State to store fetched graphs
+  const [errorMessage, setErrorMessage] = useState(''); // State to store error message for fetch graph attempts
 
-  //const [username, setUsername] = useState('');
-  //const [password, setPassword] = useState('');
+  const [message, setMessage] = useState(''); // Message state for chatGPT
+  const [response, setResponse] = useState(''); // Response state for chatGPT
 
-  const [graphId, setGraphId] = useState(null);
-  const [title, setTitle] = useState(null);
-  //const [role, setRole] = useState('');
 
-  const [message, setMessage] = useState('');
-  const [response, setResponse] = useState('');
-
-  const location = useLocation();
-  //const {username, password, role} = location.state;
-
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // State to store admin status
   const [requests, setRequests] = useState([]); // State to store role requests
 
   const [roles, setRoles] = useState([]); // State to store roles
   const [selectedRole, setSelectedRole] = useState(''); // State to store selected role
 
-  // State to store whether to check if user is admin
-  const [checkAdminInterval, setCheckAdminInterval] = useState(false);
+  const [checkAdminInterval, setCheckAdminInterval] = useState(false); // State to track admin status
 
   const [initialRoleSelected, setInitialRoleSelected] = useState(false); // State to track initial role selection
 
-  const [checkSendSelectedRoleInterval, setCheckSendSelectedRoleInterval] = useState(false);
+  const [checkSendSelectedRoleInterval, setCheckSendSelectedRoleInterval] = useState(false); // State to track sending selected role
   // Check if user is admin on component mount
   useEffect(() => {
     setCheckAdminInterval(true); // Set to true when the component mounts
@@ -86,17 +76,13 @@ function Home() {
     .then(response => response.json())
     .then(data => {
         console.log(data); // Log the response for debugging
-        // Assuming the response contains an 'admin' property indicating admin status
         if (data.admin) {
             console.log('User is admin');
             setIsAdmin(true);
-            // Handle the case where the user is an admin
-            // Call fetchRoleRequests and renderRoleRequests when admin status is true
             fetchRoleRequests();
         } else {
             console.log('User is not admin');
             setIsAdmin(false);
-            // Handle the case where the user is not an admin
         }
     })
     .catch(error => console.error(error));
@@ -182,7 +168,7 @@ function Home() {
     .catch(error => console.error(error));
   };
 
-
+  
 
   const handleSendMessage = () => {
     sendMessage(message, setResponse); // Call sendMessage function from imported chatbot functions
@@ -193,8 +179,9 @@ function Home() {
   };
 
   const handleFetchFromServer = (id, title) => {
-    fetchFromServer(id, setFetchedData, setGraphId, title, setTitle);
+    fetchFromServer(id, setFetchedData, title);
   };
+
   
   const handleFetchGraphs = () => {
     fetchGraphs(setErrorMessage, setFetchedGraphs);
@@ -247,7 +234,6 @@ function Home() {
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            //'Cookie': document.cookie // Send the entire cookie value
             'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
         }
     })
@@ -258,10 +244,6 @@ function Home() {
             console.log('Roles fetched successfully');
             setRoles(data.roles); // Update state with fetched roles
             console.log('Roles:', roles);
-            //if (data.roles.length > 0) {
-            //  setSelectedRole(data.roles[0]);
-            //}
-            // Set role only if it's the initial fetch and roles are not empty
             if (!initialRoleSelected && data.roles.length > 0) {
                 setSelectedRole(data.roles[0]);
                 setInitialRoleSelected(true); // Set initial role selection state
@@ -271,13 +253,9 @@ function Home() {
         }
     })
     .catch(error => console.error(error));
-};
-
-
-    
-  const handleFetchRolesClick = () => {
-    fetchRolesForUser();
   };
+
+
 
   const sendSelectedRole = (role) => {
     console.log('Selected role:', role);
@@ -300,18 +278,60 @@ function Home() {
     }
   };
 
+
+  // Create a new graph
+  const createGraph = (event) => {
+    event.preventDefault(); // Prevent default form submission
+    const formData = new FormData(event.target);
+    const graphData = {
+      title: formData.get('title'), // Assuming you have an input field with name 'title'
+      DCRSOPCategory: formData.get('category'), // Assuming you have an input field with name 'category'
+      copyFrom: formData.get('copyFrom') // Optional: Assuming you have an input field with name 'copyFrom'
+    };
+    
+  
+    fetch('http://localhost:5000/createGraph', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('session_token')}`
+      },
+      body: JSON.stringify(graphData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => console.error(error));
+  }
+
+
+
+
   return (
     <div className="container">
         <Link to="/">
         <button>Log out</button>
       </Link>
       <h1 className="heading">JS Example</h1>
+      <h2>Create a new graph</h2>
+      <form onSubmit={createGraph}>
+      <label>
+        Title:
+        <input type="text" name="title" />
+      </label>
+      <label>
+        Category:
+        <input type="text" name="category" />
+      </label>
+      <label>
+        Copy From (Optional):
+        <input type="text" name="copyFrom" />
+      </label>
+      <input type="submit" value="Create Graph"/>
+      </form>
       <div>
-        {/* Render admin component only if user is an admin */}
-        {/* Button to check if is admin */}
-        {/*<button className="button" onClick={checkIfAdmin}>
-          Check if admin/fetch role requests
-  </button>*/}
         {isAdmin && <AdminComponent />}
       </div>
       <div>
@@ -323,29 +343,14 @@ function Home() {
           <input type="submit" value="Submit"/>
         </form>
         <h3>Or choose a role:</h3>
-        {/*<select name="role" onChange={e => setSelectedRole(e.target.value)} value={selectedRole}>
-            {roles.map((role, index) => (
-              <option key={index} value={role}>{role}</option>
-            ))}
-          </select>*/}
           <select name="role" onChange={handleRoleChange} value={selectedRole}>
             {roles.map((role, index) => (
             <option key={index} value={role}>{role}</option>
             ))}
           </select>
-          {/*<button className="button" onClick={sendSelectedRole}>
-          Send Selected Role
-          </button>
-          <button className="button" onClick={handleFetchRolesClick}>
-          Fetch Roles
-            </button>*/}
       </div>
         
       <div>
-        {/*<button className="button" onClick={handleFetchGraphs}>
-          Fetch graphs
-        </button>*/}
-        {/* Render error message if fetch attempt fails */}
         {errorMessage && (
           <div>
             <p>{errorMessage}</p>

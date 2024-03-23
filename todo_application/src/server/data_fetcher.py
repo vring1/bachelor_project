@@ -176,4 +176,5 @@ class DataFetcher:
         print("User in test_if_user_and_password_exists_in_database: ", user)
         return user, session_token
     
+    
 

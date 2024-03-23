@@ -52,12 +52,71 @@ def fetch_graphs_after_login():
                            "blood draw" == graph['@Title'].lower() or
                            "testing" == graph['@Title'].lower() or
                            "aaa" == graph['@Title'].lower() or
-                           "dcr" == graph['@Title'].lower()]
+                           "jubi" == graph['@Title'].lower()]
     except Exception as e:
         print("Error in fetchGraphsAfterLogin: ", e)
         return None
     return jsonify({'graphs': filtered_graphs})
 
+import httpx
+import json
+@app.route('/createGraph', methods=['POST'])
+def create_graph():
+    print("Creating graph 1")
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        password = user[0][2]
+        print("User: ", user)
+        graph_data = request.json
+        title = graph_data['title']
+        #xml_data = graph_data['xml']
+        category_id = graph_data['DCRSOPCategory']
+        copy_from = graph_data['copyFrom']
+        # Construct the XML payload
+        #xml_payload = f"""
+        #    <dcr>
+        #        <title>{title}</title>
+        #        <xml>{xml_data}</xml>
+        #        <DCRSOPCategory>{category_id}</DCRSOPCategory>
+        #    </dcr>
+        #"""
+        # Construct the XML payload for an empty DCR Process Model
+        xml_payload = f"""
+            <dcr>
+                <title>{title}</title>
+                <nodes>
+                    <!-- No nodes defined -->
+                </nodes>
+                <edges>
+                    <!-- No edges defined -->
+                </edges>
+                <DCRSOPCategory>{category_id}</DCRSOPCategory>
+            </dcr>
+        """
+        json_payload = {
+            "title": title,
+            "nodes": [],
+            "edges": [],
+            "DCRSOPCategory": category_id
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
+
+        try:
+            # Make a POST request to create a new graph
+            url = "https://repository.dcrgraphs.net/api/graphs"
+            response = httpx.post(url, json=title, auth=(username, password), headers=headers)
+            print("Response: ", response)
+            
+        except Exception as e:
+            print("Error: ", e)
+            return None
+    except Exception as e:
+        print("Error: ", e)
+        return None
 
 
 
