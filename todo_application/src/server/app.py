@@ -71,44 +71,17 @@ def create_graph():
         print("User: ", user)
         graph_data = request.json
         title = graph_data['title']
-        #xml_data = graph_data['xml']
-        category_id = graph_data['DCRSOPCategory']
-        copy_from = graph_data['copyFrom']
-        # Construct the XML payload
-        #xml_payload = f"""
-        #    <dcr>
-        #        <title>{title}</title>
-        #        <xml>{xml_data}</xml>
-        #        <DCRSOPCategory>{category_id}</DCRSOPCategory>
-        #    </dcr>
-        #"""
-        # Construct the XML payload for an empty DCR Process Model
-        xml_payload = f"""
-            <dcr>
-                <title>{title}</title>
-                <nodes>
-                    <!-- No nodes defined -->
-                </nodes>
-                <edges>
-                    <!-- No edges defined -->
-                </edges>
-                <DCRSOPCategory>{category_id}</DCRSOPCategory>
-            </dcr>
-        """
+        
+        # Construct json payload for an empty DCR Process Model with jsonify
         json_payload = {
+            "id": 1002811,
             "title": title,
-            "nodes": [],
-            "edges": [],
-            "DCRSOPCategory": category_id
         }
-        headers = {
-            "Content-Type": "application/json",
-        }
-
+        
         try:
             # Make a POST request to create a new graph
             url = "https://repository.dcrgraphs.net/api/graphs"
-            response = httpx.post(url, json=title, auth=(username, password), headers=headers)
+            response = httpx.post(url, json=json_payload, auth=(username, password), headers={"Content-Type": "application/json"})
             print("Response: ", response)
             
         except Exception as e:

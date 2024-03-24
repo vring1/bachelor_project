@@ -138,3 +138,30 @@ madopskrifter,m ..)
         ))}
       </div>
 ```
+
+### Brug Swagger
+
+#### Request til at lave tom graf
+
+```
+{
+  "dcrModel": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  },
+  "base64Data": "string",
+  "updatedXML": "string",
+  "modeOfSharing": "string",
+  "sharedWith": 0,
+  "dcrGraphId": 0,
+  "dcrsopCategory": "5302",
+  "title": "test title"
+}
+```
