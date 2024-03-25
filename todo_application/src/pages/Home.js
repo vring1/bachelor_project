@@ -278,12 +278,6 @@ function Home() {
     }
   };
 
-
-  
-
-
-
-
   return (
     <div className="container">
         <Link to="/">

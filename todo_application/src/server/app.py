@@ -81,9 +81,7 @@ def generate_xml(activities, title):
         xml += "<colors bg=\"#f9f7ed\" textStroke=\"#000000\" stroke=\"#cccccc\" />\n"
         xml += "</visualization>\n"
         xml += "<roles>\n"
-        if activity['role']: # MAYBE NOT WORKING!!!!!! Empty role gets sent without this check
-            xml += f"<role>{activity['role']}</role>\n"
-        xml += "<role />\n"
+        xml += f"<role>{activity['role']}</role>\n"
         xml += "</roles>\n"
         xml += "<readRoles>\n"
         xml += "<readRole />\n"
@@ -187,8 +185,6 @@ def generate_xml(activities, title):
             print("Relation: ", relation)
             if relation['type'] == 'Condition':
                 related_activity_id = activity_id_mapping.get(relation['relatedActivity'])
-                print("Related activity id: ", related_activity_id)
-                print(activity_id_mapping[activity['title']])
                 if related_activity_id:
                     xml += f"<condition sourceId=\"{activity_id_mapping[activity['title']]}\" targetId=\"{related_activity_id}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
     xml += "</conditions>\n"
@@ -196,25 +192,34 @@ def generate_xml(activities, title):
     for i, activity in enumerate(activities):
         for relation in activity['relations']:
             if relation['type'] == 'Response':
-                xml += f"<response sourceId=\"Activity{i}\" targetId=\"{relation['relatedActivity']}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
+                related_activity_id = activity_id_mapping.get(relation['relatedActivity'])
+                if related_activity_id:
+                    xml += f"<response sourceId=\"{activity_id_mapping[activity['title']]}\" targetId=\"{related_activity_id}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
     xml += "</responses>\n"
     xml += "<excludes>\n"
     for i, activity in enumerate(activities):
         for relation in activity['relations']:
             if relation['type'] == 'Exclude':
-                xml += f"<exclude sourceId=\"Activity{i}\" targetId=\"{relation['relatedActivity']}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
+                related_activity_id = activity_id_mapping.get(relation['relatedActivity'])
+                if related_activity_id:
+                    xml += f"<exclude sourceId=\"{activity_id_mapping[activity['title']]}\" targetId=\"{related_activity_id}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
     xml += "</excludes>\n"
     xml += "<includes>\n"
     for i, activity in enumerate(activities):
         for relation in activity['relations']:
             if relation['type'] == 'Include':
-                xml += f"<include sourceId=\"Activity{i}\" targetId=\"{relation['relatedActivity']}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
+                related_activity_id = activity_id_mapping.get(relation['relatedActivity'])
+                if related_activity_id:
+                    xml += f"<include sourceId=\"{activity_id_mapping[activity['title']]}\" targetId=\"{related_activity_id}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" />\n"
     xml += "</includes>\n"
     xml += "<milestones>\n"
     for i, activity in enumerate(activities):
         for relation in activity['relations']:
             if relation['type'] == 'Milestone':
-                xml += f"<milestone sourceId=\"Activity{i}\" targetId=\"{relation['relatedActivity']}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" link=\"Activity{i}--{relation['type'].lower()}--{relation['relatedActivity']}\" />\n"
+                related_activity_id = activity_id_mapping.get(relation['relatedActivity'])
+                if related_activity_id:
+                    #Maybe not right below
+                    xml += f"<milestone sourceId=\"{activity_id_mapping[activity['title']]}\" targetId=\"{related_activity_id}\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" link=\"{activity_id_mapping[activity['title']]}--{relation['type'].lower()}--{related_activity_id}\" />\n" 
     xml += "</milestones>\n"
     xml += "<updates>\n"
     xml += "</updates>\n"
@@ -260,13 +265,11 @@ def create_graph():
         username = user[0][1]
         password = user[0][2]
         print("User: ", user)
-        title = "Lets go"#graph_data['title']
         activities_data = request.json #.activities eller giv activities_data['activities'] som argument
+        title = activities_data['title']
         
         print("Graph data: ", activities_data)
         
-        role_for_activity0 = "Valdemar"
-        role_for_activity1 = "Valdemar"
         xml = generate_xml(activities_data['activities'], title)
 
         data_new = {
@@ -277,154 +280,6 @@ def create_graph():
 
         # Retrieve a dictionary of each activity with its label and role and its relation to other activities
         
-        data = {
-          "xml": f"<dcrgraph title=\"{title}\" dataTypesStatus=\"hide\" filterLevel=\"-1\" insightFilter=\"false\" zoomLevel=\"0\" formGroupStyle=\"Normal\" formLayoutStyle=\"Horizontal\" formShowPendingCount=\"true\" graphBG=\"#f1f6fe\" graphType=\"0\" exercise=\"false\" version=\"1.0\">\n"
-            "<specification>\n"
-            "<resources>\n"
-            "<events>\n"
-            "<event id=\"Activity0\">\n"
-            "<precondition message=\"\" />\n"
-            "<custom>\n"
-            "<visualization>\n"
-            "<location xLoc=\"100\" yLoc=\"25\" />\n" # xLoc and yLoc should be calculated (low priority)
-            "<colors bg=\"#f9f7ed\" textStroke=\"#000000\" stroke=\"#cccccc\" />\n"
-            "</visualization>\n"
-            "<roles>\n"
-            f"<role>{role_for_activity0}</role>\n" # Role for activity should be set
-            "<role />\n"
-            "</roles>\n"
-            "<readRoles>\n"
-            "<readRole />\n"
-            "</readRoles>\n"
-            "<groups>\n"
-            "<group />\n"
-            "</groups>\n"
-            "<phases>\n"
-            "<phase />\n"
-            "</phases>\n"
-            "<eventType>\n"
-            "</eventType>\n"
-            "<eventScope>private</eventScope>\n"
-            "<eventTypeData>\n"
-            "</eventTypeData>\n"
-            "<eventDescription>\n"
-            "</eventDescription>\n"
-            "<purpose>\n"
-            "</purpose>\n"
-            "<guide>\n"
-            "</guide>\n"
-            "<insight use=\"false\">\n"
-            "</insight>\n"
-            "<level>1</level>\n"
-            "<sequence>1</sequence>\n"
-            "<costs>0</costs>\n"
-            "<eventData>\n"
-            "</eventData>\n"
-            "<interfaces>\n"
-            "</interfaces>\n"
-            "</custom>\n"
-            "</event>\n" # End of event (this whole block should be repeated for each activity, with the correct role)
-            "</events>\n" # End of events
-            "<subProcesses>\n"
-            "</subProcesses>\n"
-            "<distribution>\n"
-            "</distribution>\n"
-            "<labels>\n"
-            "<label id=\"Send invoice\" />\n" # Get label from client
-            "<label id=\"Approve\" />\n"  # Get label from client
-            "</labels>\n"
-            "<labelMappings>\n"
-            "<labelMapping eventId=\"Activity0\" labelId=\"Send invoice\" />\n" # Set label for activity
-            "<labelMapping eventId=\"Activity1\" labelId=\"Approve\" />\n" # Set label for activity
-            "</labelMappings>\n"
-            "<expressions>\n"
-            "</expressions>\n"
-            "<variables>\n"
-            "</variables>\n"
-            "<variableAccesses>\n"
-            "<writeAccesses />\n"
-            "</variableAccesses>\n"
-            "<custom>\n"
-            "<keywords>\n"
-            "</keywords>\n"
-            "<roles>\n"
-            "</roles>\n"
-            "<groups>\n"
-            "</groups>\n"
-            "<phases>\n"
-            "</phases>\n"
-            "<eventTypes>\n"
-            "</eventTypes>\n"
-            "<eventParameters>\n"
-            "</eventParameters>\n"
-            "<graphDetails>DCR Process</graphDetails>\n"
-            "<graphDocumentation>\n"
-            "</graphDocumentation>\n"
-            "<graphLanguage>en-US</graphLanguage>\n"
-            "<graphDomain>process</graphDomain>\n"
-            "<graphFilters>\n"
-            "<filteredGroups>\n"
-            "</filteredGroups>\n"
-            "<filteredRoles>\n"
-            "</filteredRoles>\n"
-            "<filteredPhases>\n"
-            "</filteredPhases>\n"
-            "</graphFilters>\n"
-            "<hightlighterMarkup id=\"HLM\">\n"
-            "</hightlighterMarkup>\n"
-            "<highlighterMarkup>\n"
-            "<highlightLayers>\n"
-            "</highlightLayers>\n"
-            "<highlights>\n"
-            "</highlights>\n"
-            "</highlighterMarkup>\n"
-            "</custom>\n"
-            "</resources>\n"
-            "<constraints>\n"
-            "<conditions>\n"
-            "<condition sourceId=\"Activity0\" targetId=\"Activity1\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" link=\"Activity0--condition--Activity1\" />\n"
-            "</conditions>\n"
-            "<responses>\n"
-            "</responses>\n"
-            "<coresponses>\n"
-            "</coresponses>\n"
-            "<excludes>\n"
-            "</excludes>\n"
-            "<includes>\n"
-            "</includes>\n"
-            "<milestones>\n"
-            "<milestone sourceId=\"Activity0\" targetId=\"Activity1\" filterLevel=\"1\" description=\"\" time=\"\" groups=\"\" link=\"Activity0--condition--Activity1\" />\n"
-            "</milestones>\n"
-            "<updates>\n"
-            "</updates>\n"
-            "<spawns>\n"
-            "</spawns>\n"
-            "<templateSpawns>\n"
-            "</templateSpawns>\n"
-            "</constraints>\n"
-            "</specification>\n"
-            "<runtime>\n"
-            "<custom>\n"
-            "<globalMarking>\n"
-            "</globalMarking>\n"
-            "</custom>\n"
-            "<marking>\n"
-            "<globalStore>\n"
-            "</globalStore>\n"
-            "<executed>\n"
-            "</executed>\n"
-            "<included>\n"
-            "<event id=\"Activity0\" />\n"
-            "<event id=\"Activity1\" />\n"
-            "</included>\n"
-            "<pendingResponses>\n"
-            "</pendingResponses>\n"
-            "</marking>\n"
-            "</runtime>\n"
-            "</dcrgraph>",
-            "dcrsopCategory": "8888",
-            "title": title
-        }
         try:
             # Make a POST request to create a new graph
             url = "https://repository.dcrgraphs.net/api/graphs"

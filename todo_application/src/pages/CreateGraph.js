@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function CreateGraph() {
   const [activities, setActivities] = useState([]);
+  const [graphTitle, setGraphTitle] = useState(''); 
 
   // Relation types options
   const relationTypes = ['Condition', 'Response', 'Include', 'Exclude', 'Milestone', 'Spawn'];
@@ -57,6 +58,7 @@ function CreateGraph() {
     event.preventDefault(); // Prevent default form submission
 
     const graphData = {
+      title: graphTitle,
       activities: activities.map(activity => ({
         title: activity.title,
         pending: activity.pending,
@@ -88,6 +90,15 @@ function CreateGraph() {
       </Link>
       <h2>Create a new graph</h2>
       <form onSubmit={createGraph}>
+        {/* Title on graph */}
+        <label>
+          Graph Title:
+          <input 
+            type="text" 
+            value={graphTitle} 
+            onChange={(e) => setGraphTitle(e.target.value)} 
+          />
+        </label>
         {activities.map((activity, activityIndex) => (
           <div key={activityIndex}>
             <h3>Activity</h3>
