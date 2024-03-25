@@ -15,6 +15,7 @@
 11. Sudden change in DCR API - naming in json is capital instead of lower case.
 12. pooling
 13. Hele sessionen er baseret på den cookie og dermed behov for forskellige browsers, eftersom cookies er i hele browsersessionen (gem det som problem i opgaven)
+14. Meget volatilt at bruge CategoryId[0] = '8' uden at kende mere til DCR id-brug
 
 ## TODO
 

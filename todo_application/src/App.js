@@ -4,6 +4,7 @@ import './App.css'; // Import the external CSS file
 import Login from './pages/Login';
 import Home from './pages/Home';
 import SignUp from './pages/SignUp';
+import CreateGraph from './pages/CreateGraph';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/creategraph" element={<CreateGraph />} />
         </Routes>
       </div>
     </Router>

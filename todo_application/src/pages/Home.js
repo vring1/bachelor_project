@@ -279,32 +279,7 @@ function Home() {
   };
 
 
-  // Create a new graph
-  const createGraph = (event) => {
-    event.preventDefault(); // Prevent default form submission
-    const formData = new FormData(event.target);
-    const graphData = {
-      title: formData.get('title'), // Assuming you have an input field with name 'title'
-      DCRSOPCategory: formData.get('category'), // Assuming you have an input field with name 'category'
-      copyFrom: formData.get('copyFrom') // Optional: Assuming you have an input field with name 'copyFrom'
-    };
-    
   
-    fetch('http://localhost:5000/createGraph', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('session_token')}`
-      },
-      body: JSON.stringify(graphData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => console.error(error));
-  }
 
 
 
@@ -315,22 +290,9 @@ function Home() {
         <button>Log out</button>
       </Link>
       <h1 className="heading">JS Example</h1>
-      <h2>Create a new graph</h2>
-      <form onSubmit={createGraph}>
-      <label>
-        Title:
-        <input type="text" name="title" />
-      </label>
-      <label>
-        Category:
-        <input type="text" name="category" />
-      </label>
-      <label>
-        Copy From (Optional):
-        <input type="text" name="copyFrom" />
-      </label>
-      <input type="submit" value="Create Graph"/>
-      </form>
+      <Link to="/creategraph">
+        <button>Create a new graph</button>
+      </Link>
       <div>
         {isAdmin && <AdminComponent />}
       </div>
