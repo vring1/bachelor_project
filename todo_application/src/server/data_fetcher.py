@@ -168,7 +168,7 @@ class DataFetcher:
             print("User exists in database")
         else:
             print("User does not exist in database")
-            return None
+            return None, None
         session_token = str(uuid.uuid4())
         self.execute_query("UPDATE users SET session_token = %s WHERE username = %s;", (session_token, username))
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import './../App.css';
 import { sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
@@ -25,6 +25,19 @@ function Home() {
   const [initialRoleSelected, setInitialRoleSelected] = useState(false); // State to track initial role selection
 
   const [checkSendSelectedRoleInterval, setCheckSendSelectedRoleInterval] = useState(false); // State to track sending selected role
+
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    // Check if user is logged in
+    const sessionToken = sessionStorage.getItem('session_token');
+    if (!sessionToken) {
+      // If not logged in, redirect to login page
+      navigate('/');
+    }
+  }, [navigate]); // Dependency array to ensure useEffect runs only once
+
+
   // Check if user is admin on component mount
   useEffect(() => {
     setCheckAdminInterval(true); // Set to true when the component mounts
@@ -54,6 +67,9 @@ function Home() {
       return () => clearInterval(interval);
     }
   }, [checkAdminInterval, selectedRole]);
+
+
+  
 
 
   const handleRoleChange = (e) => {

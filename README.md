@@ -21,30 +21,21 @@
 
 ### Urgent
 
-1. Man skal kunne lave graf gennem app’en er næste skridt. Skridtet efter er at konkret bruge chatgpt til at give information til app-kreering
+1. konkret bruge chatgpt til at give information til app-kreering
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess
 1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
-1. Man kan approve den samme flere gange?? + den forsvinder ikke ???
 1. KÆMPE REFACTOR!!!
 1. datafetcher har for mange responsibilities
 1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)
 1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
-1. /home skal måske ikke kunne tilgås hvis man ikke er logget ind.
 1. database sættes op, så graf navne / id kan hentes I stedet for hard coded
 
 ### Other
 
-1. Make /home only accesible via the other route (not just entering .../home)
 1. Choose different graphs (already implemented but..)
    - Add "Morgenrutine", "Aftenrutine", "Søndagsopgaver" etc.
 1. Brug database til grafnavne og load så kun dem man kender...
-1. Create graphs through application
-
-   - There's an API for this:
-   - https://repository.dcrgraphs.net/api/graphs
-   - \*Create a new DCR Process Model, returning the id. A DCR Process Model is described using DCR XML Ability to create new graph as copy from another graph, and place graph into specific category on creation (DCRSOPCategory). Title attribute to give graph new title on creation,
-   - https://documentation.dcr.design/documentation/dcr-xml/
 
 1. Add ChatGPT API.
    - You should be able to write some natural language and then it should convert it to conditionals etc.
@@ -166,3 +157,38 @@ madopskrifter,m ..)
   "title": "test title"
 }
 ```
+
+### ChatGPT as graph creator brainstorm
+
+Hello. I need you to help me create a graph in DCR. They consist of activities and relations between the activities.
+
+Here's a list of the relations:
+
+1. Condition: A condition between two activities ensures that the second activity cannot be executed unless the first is excluded or has been executed at least once.
+2. Response: A response, or goal, ensures that once the first activity has been executed the other activity becomes a goal, that must eventually be executed or excluded.
+3. Include: The include relation includes other activities upon execution.
+4. Exclude: The exclude relation excludes other activities upon execution.
+5. Milestone: The milestone relation blocks the second activity if the first is currently a goal (response) and included.
+6. Spawn: Spawns a new sub-process.
+
+Here's an example of what I need you to be able to do:
+
+This is a graph described in natural language:
+
+"I have to brush my teeth before washing my hands, but I should also remember to wash my hands when I'm done brushing."
+
+In the above we have both a condition and a response, as I'm not allowed to wash hands before and I have to do it when done brushing. I need you to be able to identify the activities and relations from a provided text like the above.
+
+Right now it's also possible to generate the graphs manually using my React client, and then the following format is sent to the server:
+
+const graphData = {
+title: graphTitle,
+activities: activities.map(activity => ({
+title: activity.title,
+pending: activity.pending,
+role: activity.role,
+relations: activity.relations
+}))
+};
+
+Now, please convert the text sent to you in the next message into activities with relations to eachother and give me them in the same format as from react.

@@ -65,7 +65,6 @@ def fetch_graphs_after_login():
     return jsonify({'graphs': filtered_graphs})
 
 import httpx
-import json
 def generate_xml(activities, title):
     xml = f"<dcrgraph title=\"{title}\" dataTypesStatus=\"hide\" filterLevel=\"-1\" insightFilter=\"false\" zoomLevel=\"0\" formGroupStyle=\"Normal\" formLayoutStyle=\"Horizontal\" formShowPendingCount=\"true\" graphBG=\"#f1f6fe\" graphType=\"0\" exercise=\"false\" version=\"1.0\">\n"
     xml += "<specification>\n"

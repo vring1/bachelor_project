@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 
 function CreateGraph() {
@@ -7,6 +7,17 @@ function CreateGraph() {
 
   // Relation types options
   const relationTypes = ['Condition', 'Response', 'Include', 'Exclude', 'Milestone', 'Spawn'];
+
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    // Check if user is logged in
+    const sessionToken = sessionStorage.getItem('session_token');
+    if (!sessionToken) {
+      // If not logged in, redirect to login page
+      navigate('/');
+    }
+  }, [navigate]); // Dependency array to ensure useEffect runs only once
 
   // Function to add a new activity to the list
   const addActivity = () => {
@@ -56,6 +67,12 @@ function CreateGraph() {
   // Function to create a new graph
   const createGraph = (event) => {
     event.preventDefault(); // Prevent default form submission
+
+    // Ask for confirmation
+    const confirmed = window.confirm("Are you sure you want to submit the graph?");
+    if (!confirmed) {
+      return; // Don't proceed if not confirmed
+    }
 
     const graphData = {
       title: graphTitle,
