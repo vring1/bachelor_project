@@ -4,7 +4,9 @@ from flask_cors import CORS
 from database_connector import DatabaseConnector
 from data_fetcher import DataFetcher
 from chat_handler import ChatHandler
+from chat_handler import GraphCreator
 import openai
+import json
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -12,6 +14,60 @@ CORS(app, supports_credentials=True)
 
 data_fetcher = DataFetcher()
 chat_handler = ChatHandler()
+graph_creator = GraphCreator()
+
+@app.route('/chatGraphCreator', methods=['POST'])
+def chat_graph_creator():
+    print("Creating graph 2")
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        password = user[0][2]
+
+        message = request.json['message']
+
+        if message:
+            graph_creator.messages.append(
+                {"role": "user", "content": message},
+            )
+            chat = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo", messages=graph_creator.messages
+            )
+        else:
+            raise ValueError("Message is empty")
+
+        reply = chat.choices[0].message.content
+
+        json_data = json.loads(reply)
+        print("Reply: ", json_data)
+
+
+        title = json_data['title']
+        print("Title: ", title)
+        
+        xml = generate_xml(json_data['activities'], title)
+
+        data_new = {
+            "xml": xml,
+            "dcrsopCategory": "8888",
+            "title": title
+        }
+
+        # Retrieve a dictionary of each activity with its label and role and its relation to other activities
+        
+        try:
+            # Make a POST request to create a new graph
+            url = "https://repository.dcrgraphs.net/api/graphs"
+            response = httpx.post(url, auth=(username, password), headers={"Content-Type": "application/json-patch+json"}, json=data_new)
+            print("Response: ", response)
+            
+        except Exception as e:
+            print("Error: ", e)
+            return None
+    except Exception as e:
+        print("Error: ", e)
+        return None
 
 
 @app.route('/chat', methods=['POST'])

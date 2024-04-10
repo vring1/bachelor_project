@@ -65,7 +65,7 @@
 
 1. Hvordan skal rapport sættes op? - Disposition...
 
-   - Omfang??? Introduktion (motivér opgaven)
+   - Introduktion (motivér opgaven)
      Bagggrundsinformation (DCR, ChatGPT)
 
      Analyse:
@@ -77,7 +77,7 @@
      Design/implementering: - Test.. (ikke kun manuelt testet) - Fremhæv overordnet design - Fremhæv dele af kode (ChatGPT API og DCR API f.eks.) - Design patterns & principper (solid)? - Objektorienteret programmering in general - Koden kan vedligheholdes på baggrund af principper etc.
 
      Diskussion:
-     Fordele og ulemper - ved APIAbility to - chatGPT - deklarativ vs imperativ
+     Fordele og ulemper - ved API - chatGPT - deklarativ vs imperativ
      Hvad mangler? Hvis det var en rigtig app - GDPR
      Hvilke udfordringer har der været
      Hver er gode ting man har fundet
@@ -171,6 +171,8 @@ Here's a list of the relations:
 5. Milestone: The milestone relation blocks the second activity if the first is currently a goal (response) and included.
 6. Spawn: Spawns a new sub-process.
 
+An activity can also be pending (be a goal), which is just a boolean. The first activity mentioned should ALWAYS be pending. Also every activity should always have some sort of relation to another. And, an activity can have more relations to the same activity (fx both a condition and response).
+
 Here's an example of what I need you to be able to do:
 
 This is a graph described in natural language:
@@ -179,16 +181,50 @@ This is a graph described in natural language:
 
 In the above we have both a condition and a response, as I'm not allowed to wash hands before and I have to do it when done brushing. I need you to be able to identify the activities and relations from a provided text like the above.
 
-Right now it's also possible to generate the graphs manually using my React client, and then the following format is sent to the server:
+Right now it's also possible to generate the graphs manually using my React client, and then the following format is sent to the server (this is an example):
 
-const graphData = {
-title: graphTitle,
-activities: activities.map(activity => ({
-title: activity.title,
-pending: activity.pending,
-role: activity.role,
-relations: activity.relations
-}))
-};
+const graphData =
+{
+'title': 'Blabla',
+'activities': [
+{
+'title': 'hey med dig',
+'pending': True,
+'role': 'Valdemar',
+'relations': [
+{
+'relatedActivity': 'hey nej',
+'type': 'Condition'
+},
+{
+'relatedActivity': 'hey nej',
+'type': 'Response'
+}
+]
+},
+{
+'title': 'hey nej',
+'pending': False,
+'role': 'Valdemar',
+'relations': [
+{
+'relatedActivity': 'hey nej nej',
+'type': 'Condition'
+}
+]
+},
+{
+'title': 'hej nej nej',
+'pending': False,
+'role': 'Valdemar',
+'relations': [
 
-Now, please convert the text sent to you in the next message into activities with relations to eachother and give me them in the same format as from react.
+      ]
+    }
+
+]
+}
+
+Now, please convert the text sent to you in the next message into activities with relations to eachother and give me them in the same format as from react. Also, please ONLY send the json and not eny other text!
+
+"The title should be Sej Graf and the role is Valdemar. When I wake up i need to brush my teeth and then drink some water. Then I either have to pee or go for a run, which then makes me need to take a shower."

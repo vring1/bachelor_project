@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
+import { createGraphFromMessage } from '../components/home/ChatFunctions'; // Import chatbot functions
 
 function CreateGraph() {
   const [activities, setActivities] = useState([]);
@@ -7,6 +8,7 @@ function CreateGraph() {
 
   // Relation types options
   const relationTypes = ['Condition', 'Response', 'Include', 'Exclude', 'Milestone', 'Spawn'];
+  const [message, setMessage] = useState(''); // Message state for chatGPT
 
   const navigate = useNavigate(); 
 
@@ -84,6 +86,8 @@ function CreateGraph() {
       }))
     };
 
+      
+
     fetch('http://localhost:5000/createGraph', {
       method: 'POST',
       credentials: 'include',
@@ -99,6 +103,11 @@ function CreateGraph() {
     })
     .catch(error => console.error(error));
   };
+
+  const handleCreateGraphFromMessage = () => {
+    createGraphFromMessage(message); // Call sendMessage function from imported chatbot functions
+  };
+  
 
   return (
     <div>
@@ -177,6 +186,21 @@ function CreateGraph() {
         <button type="button" onClick={addActivity}>Add Activity</button>
         <input type="submit" value="Create Graph"/>
       </form>
+
+      <h1 className="heading">Chatbot Example</h1>
+      <h2 className="sub-heading">Create a graph from a message</h2>
+      <h3>Remember to explicitly write what you want the title and roles to be.</h3>
+      <input 
+        type="text" 
+        value={message} 
+        onChange={e => setMessage(e.target.value)} 
+        placeholder="Type your message..." 
+      />
+      <button onClick={handleCreateGraphFromMessage}>Send</button>
+      {/*<div>
+        <p>Bot's response:</p>
+        <p>{response}</p>
+      </div>*/}
     </div>
   );
 }
