@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
-import { createGraphFromMessage } from '../components/home/ChatFunctions'; // Import chatbot functions
+import { createGraphFromMessage, sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
+import { Button, TextField, Select, MenuItem, Grid } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function CreateGraph() {
   const [activities, setActivities] = useState([]);
@@ -9,6 +11,10 @@ function CreateGraph() {
   // Relation types options
   const relationTypes = ['Condition', 'Response', 'Include', 'Exclude', 'Milestone', 'Spawn'];
   const [message, setMessage] = useState(''); // Message state for chatGPT
+
+
+  const [messageChat, setMessageChat] = useState(''); // Message state for chatGPT
+  const [response, setResponse] = useState(''); // Response state for chatGPT
 
   const navigate = useNavigate(); 
 
@@ -107,9 +113,24 @@ function CreateGraph() {
   const handleCreateGraphFromMessage = () => {
     createGraphFromMessage(message); // Call sendMessage function from imported chatbot functions
   };
-  
 
+  const handleSendMessage = (e) => {
+    e.preventDefault(); // Prevent default form submission
+    sendMessage(messageChat, setResponse); // Call sendMessage function from imported chatbot functions
+    setMessageChat('');
+  };
+
+  const handleSendMessageFromButton = (msg) => {
+    sendMessageFromButton(msg, setResponse); // Call sendMessageFromButton function from imported chatbot functions
+  };
+  
+  const theme = createTheme({
+    palette: {
+      mode: 'dark', // Dark grey color
+    },
+  });
   return (
+    <ThemeProvider theme={theme}>
     <div>
       <Link to="/home">
         <button>Back to home</button>
@@ -197,11 +218,41 @@ function CreateGraph() {
         placeholder="Type your message..." 
       />
       <button onClick={handleCreateGraphFromMessage}>Send</button>
-      {/*<div>
+      
+
+
+
+      <h1 className="heading">Chatbot</h1>
+      <form onSubmit={handleSendMessage}>
+      <Grid container spacing={2} alignItems="center">
+        <Grid item>
+          <TextField
+          label="Type your message..."
+          value={messageChat}
+          onChange={e => setMessageChat(e.target.value)}
+          variant="outlined"
+        />
+        </Grid>
+        <Grid item>
+          <Button type="submit" variant="contained" color="primary">Send</Button>
+        </Grid>
+      </Grid>
+      </form>
+      
+
+
+
+      <div>
         <p>Bot's response:</p>
         <p>{response}</p>
-      </div>*/}
+      </div>
+      <h2 className='exampleMessages'>Example messages:</h2>
+      <Button onClick={() => { handleSendMessageFromButton('Which tasks could I add to my morning routine?'); }}>Which tasks could I add to my morning routine?</Button>
+
+
+
     </div>
+    </ThemeProvider>
   );
 }
 

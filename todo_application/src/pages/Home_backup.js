@@ -4,15 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import './../App.css';
 import { sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
 import { fetchFromServer, fetchGraphs, performEvent, clearEvents } from '../components/home/GraphFunctions'; // Import server functions
-import { Button, TextField, Select, MenuItem, Grid } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 
 function Home() {
   const [fetchedData, setFetchedData] = useState([]); // State to store fetched events
   const [fetchedGraphs, setFetchedGraphs] = useState([]); // State to store fetched graphs
+  const [errorMessage, setErrorMessage] = useState(''); // State to store error message for fetch graph attempts
 
-  
+  const [message, setMessage] = useState(''); // Message state for chatGPT
+  const [response, setResponse] = useState(''); // Response state for chatGPT
 
 
   const [isAdmin, setIsAdmin] = useState(false); // State to store admin status
@@ -187,7 +186,13 @@ function Home() {
 
   
 
- 
+  const handleSendMessage = () => {
+    sendMessage(message, setResponse); // Call sendMessage function from imported chatbot functions
+  };
+
+  const handleSendMessageFromButton = (msg) => {
+    sendMessageFromButton(msg, setResponse); // Call sendMessageFromButton function from imported chatbot functions
+  };
 
   const handleFetchFromServer = (id, title) => {
     fetchFromServer(id, setFetchedData, title);
@@ -195,7 +200,7 @@ function Home() {
 
   
   const handleFetchGraphs = () => {
-    fetchGraphs(setFetchedGraphs);
+    fetchGraphs(setErrorMessage, setFetchedGraphs);
   };
   
   const handlePerformEvent = (event_id) => {
@@ -232,6 +237,8 @@ function Home() {
   const AdminComponent = () => {
     return (
       <div>
+        <h2>Admin Component</h2>
+        <p>This is where the admin should be able to approve role requests</p>
         {renderRoleRequests()}
       </div>
     );
@@ -287,112 +294,87 @@ function Home() {
     }
   };
 
-  const theme = createTheme({
-    palette: {
-      mode: 'dark', // Dark grey color
-    },
-  });
-  
   return (
-    <ThemeProvider theme={theme}>
-      <div className="container">
-        <Grid container justifyContent="space-between" alignItems="center">
-          <Grid item>
-            <h1>Home</h1>
-          </Grid>
-          <Grid item>
-            {/* Grid container for Log out and Create a new graph buttons */}
-            <Grid container justifyContent="flex-end" spacing={2}>
-              <Grid item>
-                <Link to="/creategraph">
-                  <Button variant="contained" color="primary">Create a new graph</Button>
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link to="/">
-                  <Button variant="contained" color="primary">Log out</Button>
-                </Link>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-        <br /> <br />
-        <Grid container justifyContent="space-between" spacing={8} alignItems="flex-start">
-          <Grid item>
-            <h2>Graphs</h2>
-          </Grid>
-          <Grid item>
-            <span>Active Role: </span>
-            <Select value={selectedRole} onChange={handleRoleChange}>
-              {roles.map((role, index) => (
-                <MenuItem key={index} value={role}>{role}</MenuItem>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item>
-            <form onSubmit={requestRole}>
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item>
-                  <TextField label="Request a role" name="role" variant="outlined" />
-                </Grid>
-                <Grid item>
-                  <Button type="submit" variant="contained" color="primary">Submit</Button>
-                </Grid>
-              </Grid>
-            </form>
-          </Grid>
-          <Grid item>
-            <Grid container alignItems="center">
-                <div>
-                {isAdmin && <AdminComponent />}
-                </div>
-              </Grid>
-          </Grid>
-        </Grid>
-        <Grid container alignItems="center" spacing={8}>
-          {/* Grid item for fetched graphs */}
-          <Grid item xs={4}>
-            <div>
-              {fetchedGraphs.map((graph, index) => (
-                <div key={index} style={{ marginBottom: '10px' }}>
-                  <Button onClick={() => handleFetchFromServer(graph['@Id'], graph['@Title'])}>
-                    {graph['@Title']}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </Grid>
-          {/* Grid item for tasks, centered */}
-          <Grid item xs={4}>
-            <div className="tasks-container">
-              <div className="tasks">
-                <h2>Tasks</h2>
-                <div className="clear-button">
-                  {fetchedData.length > 0 && (
-                    <Button variant="contained" color="secondary" onClick={handleClearEvents}>
-                      Clear Events
-                    </Button>
-                  )}
-                </div>
-                <br />
-                {fetchedData.map((item, index) => (
-                  <Button key={index} variant={item['@Pending'] === 'true' || item['@EffectivelyPending'] === 'true' ? 'contained' : 'outlined'} onClick={() => handlePerformEvent(item['@id'])}>
-                    {item['@label']}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </Grid>
-          {/* Empty grid item to maintain space */}
-          <Grid item xs={4}></Grid>
-        </Grid>
-        {/* Display fetched events */}
-        
+    <div className="container">
+        <Link to="/">
+        <button>Log out</button>
+      </Link>
+      <h1 className="heading">JS Example</h1>
+      <Link to="/creategraph">
+        <button>Create a new graph</button>
+      </Link>
+      <div>
+        {isAdmin && <AdminComponent />}
       </div>
-    </ThemeProvider>
+      <div>
+        <h2>Request or choose a role</h2>
+        <form onSubmit={requestRole}>
+          <label>Request a role:</label>
+          <input type="text" name="role" />
+          <br/>
+          <input type="submit" value="Submit"/>
+        </form>
+        <h3>Or choose a role:</h3>
+          <select name="role" onChange={handleRoleChange} value={selectedRole}>
+            {roles.map((role, index) => (
+            <option key={index} value={role}>{role}</option>
+            ))}
+          </select>
+      </div>
+        
+      <div>
+        {errorMessage && (
+          <div>
+            <p>{errorMessage}</p>
+          </div>
+        )}
+      </div>
+        
+      {/* Display fetched events */}
+      <div>
+        <h2>Fetched Events:</h2>
+        {fetchedData.map((item, index) => (
+          <button key={index} className={item['@Pending'] === 'true' ||
+           item['@EffectivelyPending'] === 'true' ? 'pending-button' : 'regular-button'}
+            onClick={() => handlePerformEvent(item['@id'])}>
+            {item['@label']}
+          </button>
+        ))}
+      </div>
+      {/* Display fetched graphs */}
+      <div>
+        <h2>Fetched Graphs:</h2>
+        {fetchedGraphs.map((graph, index) => (
+          <button key={index} onClick={() => handleFetchFromServer(graph['@Id'], graph['@Title'])}>
+            {graph['@Title']}
+          </button>
+        ))}
+      </div>
+      <div>
+        {/* Render clear events button only if there are no pending tasks */}
+        <button className="button" onClick={handleClearEvents}>
+          Clear Events
+        </button>     
+      </div>
+
+      <h1 className="heading">Chatbot Example</h1>
+      <input 
+        type="text" 
+        value={message} 
+        onChange={e => setMessage(e.target.value)} 
+        placeholder="Type your message..." 
+      />
+      <button onClick={handleSendMessage}>Send</button>
+      <div>
+        <p>Bot's response:</p>
+        <p>{response}</p>
+      </div>
+      <h2 className='exampleMessages'>Example messages:</h2>
+      <button onClick={() => {
+        handleSendMessageFromButton('Which tasks could I add to my morning routine?');
+      }}>Which tasks could I add to my morning routine?</button>
+    </div>
   );
-  
-  
 
 }
 

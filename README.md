@@ -21,14 +21,14 @@
 
 ### Urgent
 
-1. konkret bruge chatgpt til at give information til app-kreering
+1. Man skal ikke kunne have duplicate roles eller anmode om den samme flere gange
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess
-1. logout skal have metode, der sender token og sørger for man ikke er logget ind længere(MÅSKE)
+1. logout skal have metode, der dropper sessiontoken
 1. KÆMPE REFACTOR!!!
 1. datafetcher har for mange responsibilities
 1. brug pk (integer id) i stedet for email (lige nu har du mails stored i flere tables. de burde bare joines på id)
-1. max antal requests + man skal kunne vælge de godkendte (og de skal self kunne godkendes af en!!)
+1. max antal requests
 1. database sættes op, så graf navne / id kan hentes I stedet for hard coded
 
 ### Other

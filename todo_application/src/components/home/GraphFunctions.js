@@ -21,7 +21,7 @@ const fetchFromServer = (id, setFetchedData, title) => {
 };
 
 
-const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
+const fetchGraphs = (setFetchedGraphs) => {
   console.log("Document cookie: ", document.cookie);
   fetch(`http://localhost:5000/fetchGraphsAfterLogin` , {
     method: 'GET',
@@ -34,11 +34,11 @@ const fetchGraphs = (setErrorMessage, setFetchedGraphs) => {
     .then(response => response.json())
     .then(data => {
       if (data === null) {
-        setErrorMessage('You are not logged in (TODO: maybe send you to login page)'); 
+        console.log('You are not logged in (TODO: maybe send you to login page)'); 
       } else if (data.graphs) {
         setFetchedGraphs(data.graphs); 
       } else {
-        setErrorMessage('No graphs found for this user.'); 
+        console.log('No graphs found for this user.'); 
       }
     })
     .catch(error => console.error(error));

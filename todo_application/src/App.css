@@ -1,50 +1,19 @@
-.container {
-    text-align: center;
-    padding: 20px;
+
+  body {
+    background-color: #303030; /* Dark grey color */
+    color: #fff; /* Text color */
   }
   
-  .heading {
-    color: blue;
-  }
-  
-  .paragraph {
-    font-size: 18px;
-  }
-  
-  .button {
-    margin: 5px;
-    padding: 10px;
-    background-color: lightblue;
-    cursor: pointer;
-  }
-  
-  .form {
-    margin: 20px 0;
-  }
-  
-  .input {
-    padding: 8px;
-    margin-right: 8px;
-  }
-  
-  .submitButton {
-    padding: 10px;
-    background-color: green;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  .pending-button {
-    background-color: yellow; /* Change background color to yellow for pending buttons */
-    color: black; /* Change text color to black */
-  }
-  
-  .regular-button {
-    background-color: #007bff;
-    color: white;
-  }
+.tasks-container {
+  display: flex;
+  justify-content: flex-end; /* Align the tasks section to the right */
+  margin-top: 20px; /* Adjust as needed */
+}
+
+.tasks {
+  flex: 1; /* Allow the tasks section to take up remaining space */
+  text-align: center; /* Align tasks to the center */
+  margin-right: 20px; /* Add space between tasks and the clear button */
+}
+ 
   
