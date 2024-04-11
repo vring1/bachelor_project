@@ -24,7 +24,6 @@
 
 1. Lav "Role" til dropdown når man laver graf manuelt.
 1. Lav related activity til dropdown med muligheder fra andre titler...
-1. Lille kryds ud fra graferne så man kan slette dem. (Nyt api kald ...)
 1. Man skal ikke kunne have duplicate roles eller anmode om den samme flere gange
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess

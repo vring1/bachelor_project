@@ -102,15 +102,6 @@ def fetch_graphs_after_login():
         graphs = data_fetcher.fetch_graphs_after_login(username, password)
         if graphs is None:
             return jsonify(None)
-        #return jsonify({'graphs': graphs})
-        # TODO: Implement in database such that the graphs that the user has created can be shown and not hardcoded here
-        #filtered_graphs = [graph for graph in graphs if
-        #                   "blood draw" == graph['@Title'].lower() or
-        #                   "testing" == graph['@Title'].lower() or
-        #                   "aaa" == graph['@Title'].lower() or
-        #                   "jubi" == graph['@Title'].lower()]
-        
-        # Check if the first symbol on CategoryId is 8
         filtered_graphs = [graph for graph in graphs if
                             graph['@CategoryId'][0] == '8'
                            ]
@@ -367,6 +358,26 @@ def test_if_user_exists_in_database(): # Login
         return jsonify(None)
     #return jsonify({'user': user, 'session_token': session_token})
     return jsonify({'user': user, 'session_token': session_token})
+
+
+
+@app.route('/deleteGraph', methods=['POST'])
+def delete_graph():
+    session_token = request.headers.get('Authorization').split('Bearer ')[1]
+    try:
+        user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
+        username = user[0][1]
+        password = user[0][2]
+        graph_id = request.json['id']
+        print("Graph id: ", graph_id)
+        url = f"https://repository.dcrgraphs.net/api/graphs/{graph_id}"
+        response = httpx.delete(url, auth=(username, password))
+        print("Response: ", response)
+    except Exception as e:
+        print("Error: ", e)
+        return None
+    return jsonify({'graph_id': graph_id})
+
 
 
 @app.route('/fetchData', methods=['GET'])

@@ -290,6 +290,24 @@ function Home() {
     }
   };
 
+  const deleteGraph = (id) => {
+    fetch('http://localhost:5000/deleteGraph', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
+      },
+      body: JSON.stringify({ id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      handleFetchGraphs();
+    })
+    .catch(error => console.error(error));
+  };
+
   const theme = createTheme({
     palette: {
       mode: 'dark', // Dark grey color
@@ -359,6 +377,9 @@ function Home() {
                 <div key={index} style={{ marginBottom: '10px' }}>
                   <Button onClick={() => handleFetchFromServer(graph['@Id'], graph['@Title'])}>
                     {graph['@Title']}
+                  </Button>
+                  <Button onClick={() => deleteGraph(graph['@Id'])} variant="contained" color="secondary" style={{ marginLeft: '5px' }}>
+                    Delete
                   </Button>
                 </div>
               ))}
