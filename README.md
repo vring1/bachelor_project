@@ -22,6 +22,7 @@
 
 ### Urgent
 
+1. TESTING :/
 1. Lav "Role" til dropdown når man laver graf manuelt.
 1. Lav related activity til dropdown med muligheder fra andre titler...
 1. Man skal ikke kunne have duplicate roles eller anmode om den samme flere gange
