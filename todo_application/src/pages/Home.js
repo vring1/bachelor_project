@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './../App.css';
 import { sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
 import { fetchFromServer, fetchGraphs, performEvent, clearEvents } from '../components/home/GraphFunctions'; // Import server functions
-import { Button, TextField, Select, MenuItem, Grid } from '@mui/material';
+import { Button, TextField, Select, MenuItem, Grid, Typography, List, ListItem } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
@@ -124,32 +124,35 @@ function Home() {
       .catch(error => console.error(error));
   };
   
-  
+
   const renderRoleRequests = () => {
     return (
       <div>
-        <h2>Role Requests</h2>
-        <ul>
+        <List>
           {requests.map((request, index) => (
-            <li key={index}>
-              Username: {request[1]}, Role: {request[2]}
+            <ListItem key={index} style={{ marginBottom: '10px' }}>
               {isAdmin && (
                 <div>
-                  <button onClick={() => approveRoleRequest(request[1], request[2])}>
+                  <Button onClick={() => approveRoleRequest(request[1], request[2])} variant="contained" color="primary" style={{ marginRight: '5px'}}>
                     Approve
-                  </button>
-                  <button onClick={() => denyRoleRequest(request[1], request[2])}>
+                  </Button>
+                  <Button onClick={() => denyRoleRequest(request[1], request[2])} variant="contained" color="secondary" style={{ marginRight: '5px'}}>
                     Deny
-                  </button>
+                  </Button>
                 </div>
               )}
-            </li>
+              <Grid item xs={3}>
+              <Typography>
+                {request[1]}: {request[2]}
+              </Typography>
+              </Grid>
+              
+            </ListItem>
           ))}
-        </ul>
+        </List>
       </div>
     );
   };
-
 
   const approveRoleRequest = (username, role) => {
     fetch('http://localhost:5000/approveRoleRequest', {
@@ -298,7 +301,9 @@ function Home() {
       <div className="container">
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item>
-            <h1>Home</h1>
+            <Link to="/home">
+              <Button  color="primary"><img src={require('../img/./todo.png')} alt="Todo" style={{ width: 'auto', height: '100px', marginLeft: '8px' }} /></Button>
+          </Link>
           </Grid>
           <Grid item>
             {/* Grid container for Log out and Create a new graph buttons */}
@@ -319,10 +324,9 @@ function Home() {
         <br /> <br />
         <Grid container justifyContent="space-between" spacing={8} alignItems="flex-start">
           <Grid item>
-            <h2>Graphs</h2>
+            <Typography variant="h4" style={{color: theme.palette.primary.dark}}>Graphs</Typography>
           </Grid>
           <Grid item>
-            <span>Active Role: </span>
             <Select value={selectedRole} onChange={handleRoleChange}>
               {roles.map((role, index) => (
                 <MenuItem key={index} value={role}>{role}</MenuItem>
@@ -343,13 +347,11 @@ function Home() {
           </Grid>
           <Grid item>
             <Grid container alignItems="center">
-                <div>
-                {isAdmin && <AdminComponent />}
-                </div>
+                {isAdmin && <Typography variant="h4" style={{color: theme.palette.primary.dark}}>Role Requests</Typography>}
               </Grid>
           </Grid>
         </Grid>
-        <Grid container alignItems="center" spacing={8}>
+        <Grid container alignItems="flex-start" spacing={8} justifyContent="space-between">
           {/* Grid item for fetched graphs */}
           <Grid item xs={4}>
             <div>
@@ -361,33 +363,32 @@ function Home() {
                 </div>
               ))}
             </div>
-          </Grid>
-          {/* Grid item for tasks, centered */}
-          <Grid item xs={4}>
-            <div className="tasks-container">
-              <div className="tasks">
-                <h2>Tasks</h2>
-                <div className="clear-button">
-                  {fetchedData.length > 0 && (
+            
+        </Grid>
+        <Grid item xs={3}>
+            <br />
+            {fetchedData.length > 0 && (
                     <Button variant="contained" color="secondary" onClick={handleClearEvents}>
                       Clear Events
                     </Button>
                   )}
-                </div>
-                <br />
-                {fetchedData.map((item, index) => (
-                  <Button key={index} variant={item['@Pending'] === 'true' || item['@EffectivelyPending'] === 'true' ? 'contained' : 'outlined'} onClick={() => handlePerformEvent(item['@id'])}>
+            <br />
+            {fetchedData.map((item, index) => (
+                  <Button key={index} style={{ marginTop: '15px', marginLeft: '10px', marginRight: '10px' }} variant={item['@Pending'] === 'true' || item['@EffectivelyPending'] === 'true' ? 'contained' : 'outlined'} onClick={() => handlePerformEvent(item['@id'])}>
                     {item['@label']}
                   </Button>
                 ))}
-              </div>
-            </div>
           </Grid>
-          {/* Empty grid item to maintain space */}
-          <Grid item xs={4}></Grid>
+          <Grid item>
+          </Grid>
+          <Grid item>
+          </Grid>
+          <Grid item>
+          </Grid>
+          <Grid item xs={3}>
+          {isAdmin && <AdminComponent />}
+          </Grid>
         </Grid>
-        {/* Display fetched events */}
-        
       </div>
     </ThemeProvider>
   );

@@ -4,16 +4,5 @@
     color: #fff; /* Text color */
   }
   
-.tasks-container {
-  display: flex;
-  justify-content: flex-end; /* Align the tasks section to the right */
-  margin-top: 20px; /* Adjust as needed */
-}
 
-.tasks {
-  flex: 1; /* Allow the tasks section to take up remaining space */
-  text-align: center; /* Align tasks to the center */
-  margin-right: 20px; /* Add space between tasks and the clear button */
-}
- 
   

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Button, TextField, Select, MenuItem, Grid, Typography, List, ListItem } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function SignUp() {
   const [username, setUsername] = useState('');
@@ -28,34 +30,53 @@ function SignUp() {
         setErrorMessage('An error occurred. Please try again later.'); // Set error message
       });
   }
-  
+  const theme = createTheme({
+    palette: {
+      mode: 'dark', // Dark grey color
+    },
+  });
   return (
-    <div>
-      <h2>Sign Up</h2>
-      <p>Please sign up using your DCR credentials (email and password)</p>
-      {/* Your sign up form */}
-      <form onSubmit={fetchGraphs}>
-      <label>
-          Username:
-          <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <br />
-        <input type="submit" value="Submit" />
-      </form>
-
-      {/* Render error message if fetch attempt fails */}
-      {errorMessage && (
-        <div>
-          <p>{errorMessage}</p>
-        </div>
-      )}
-      <p>Already have an account? <Link to="/">Login</Link></p>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <form onSubmit={fetchGraphs} style={{ width: '300px' }}>
+          
+          <Typography variant="body1" paragraph>
+            Please sign up using your DCR credentials (email and password).
+          </Typography>
+          <TextField
+            label="Username"
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            variant="outlined"
+            fullWidth
+            style={{ marginBottom: '10px' }}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            fullWidth
+            style={{ marginBottom: '10px' }}
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
+          {errorMessage && (
+            <Typography variant="body1" style={{ color: 'red', marginTop: '10px' }}>
+              {errorMessage}
+            </Typography>
+          )}
+          <Typography variant="body1" style={{ marginTop: '10px' }}>
+            Already have an account? <Link to="/">Login</Link>
+          </Typography>
+        </form>
+      </div>
+    </ThemeProvider>
   );
 }
 

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
+import { Button, TextField, Select, MenuItem, Grid, Typography, List, ListItem } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -17,25 +19,18 @@ function Login() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ username, password }),
-      //credentials: 'include',
       credentials: 'include',
     })
       .then(response => response.json())
       .then(data => {
         if (data === null) {
-          setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net');
+          setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net.');
         } else if (data) {
-          // Clear existing cookies
-          //document.cookie.split(";").forEach(cookie => {
-          //  document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-          //});
-          //document.cookie = `session_token=${data.session_token};path=/`;
           sessionStorage.setItem('session_token', data.session_token);
-
           console.log('session_token:', data.session_token);
           navigate('/home');
         } else {
-          setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net');
+          setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net.');
         }
         setUsername('');
         setPassword('');
@@ -45,40 +40,55 @@ function Login() {
         setErrorMessage('An error occurred. Please try again later.');
       });
   }
-
+  const theme = createTheme({
+    palette: {
+      mode: 'dark', // Dark grey color
+    },
+  });
   return (
-    <div>
-      <h2>Login</h2>
-      {/* Your login form */}
-      <form onSubmit={redirectToHome}>
-        <label>
-          Username:
-          <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <br />
-        {/*<label>
-          Role:
-          <input type="text" name="role" value={role} onChange={(e) => setRole(e.target.value)} />
-        </label>
-  <br /> */}
-        <input type="submit" value="Submit" />
-      </form>
+    <ThemeProvider theme={theme}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        {/* Centered login form */}
+        <form onSubmit={redirectToHome} style={{ width: '300px' }}>
+          <TextField
+            label="Username"
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            variant="outlined"
+            fullWidth
+            style={{ marginBottom: '10px' }}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            fullWidth
+            style={{ marginBottom: '10px' }}
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
 
-      {/* Render error message if fetch attempt fails */}
-      {errorMessage && (
-        <div>
-          <p>{errorMessage}</p>
-        </div>
-      )}
+          {errorMessage && (
+            <div style={{ marginBottom: '10px' }}>
+              <br />
+              <Typography variant="body1" style={{ color: 'red' }}>
+                {errorMessage}
+              </Typography>
+            </div>
+          )}
 
-
-      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
-    </div>
+          <Typography variant="body1" style={{ marginTop: '10px' }}>
+            Don't have an account? <Link to="/signup">Sign up</Link>
+          </Typography>
+        </form>
+      </div>
+    </ThemeProvider>
   );
 }
 

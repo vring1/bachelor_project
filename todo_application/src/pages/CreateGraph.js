@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 import { createGraphFromMessage, sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
-import { Button, TextField, Select, MenuItem, Grid } from '@mui/material';
+import { Button, TextField, Grid, Typography, List, ListItem, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function CreateGraph() {
@@ -110,8 +110,10 @@ function CreateGraph() {
     .catch(error => console.error(error));
   };
 
-  const handleCreateGraphFromMessage = () => {
+  const handleCreateGraphFromMessage = (e) => {
+    e.preventDefault(); // Prevent default form submission
     createGraphFromMessage(message); // Call sendMessage function from imported chatbot functions
+    setMessage('');
   };
 
   const handleSendMessage = (e) => {
@@ -129,100 +131,128 @@ function CreateGraph() {
       mode: 'dark', // Dark grey color
     },
   });
+
   return (
     <ThemeProvider theme={theme}>
     <div>
-      <Link to="/home">
-        <button>Back to home</button>
-      </Link>
-      <h2>Create a new graph</h2>
+      <Grid container spacing={2} alignItems="center">
+      <Grid item>
+            <Link to="/home">
+              <Button  color="primary"><img src={require('../img/./todo.png')} alt="Todo" style={{ width: 'auto', height: '100px', marginLeft: '8px' }} /></Button>
+          </Link>
+      </Grid>
+      </Grid>
+
+      <Grid container spacing={2} alignItems="" justifyContent="space-between">
+      <Grid item>
+        <br />
+      <Typography variant="h4" style={{color: theme.palette.primary.dark}}>Create a new graph</Typography>
+      <br />
+
       <form onSubmit={createGraph}>
-        {/* Title on graph */}
-        <label>
-          Graph Title:
-          <input 
-            type="text" 
-            value={graphTitle} 
-            onChange={(e) => setGraphTitle(e.target.value)} 
-          />
-        </label>
-        {activities.map((activity, activityIndex) => (
-          <div key={activityIndex}>
-            <h3>Activity</h3>
-            <label>
-              Title:
-              <input 
-                type="text" 
-                value={activity.title} 
-                onChange={(e) => handleActivityChange(activityIndex, 'title', e.target.value)} 
-              />
-            </label>
-            <label>
-              Pending:
-              <input 
-                type="checkbox" 
-                checked={activity.pending} 
-                onChange={(e) => handleActivityChange(activityIndex, 'pending', e.target.checked)} 
-              />
-            </label>
-            <label>
-              Role:
-              <input 
-                type="text" 
-                value={activity.role} 
-                onChange={(e) => handleActivityChange(activityIndex, 'role', e.target.value)} 
-              />
-            </label>
-            <button type="button" onClick={() => removeActivity(activityIndex)}>Remove</button>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+             <TextField 
+              label="Graph Title" 
+              value={graphTitle} 
+              onChange={(e) => setGraphTitle(e.target.value)} 
+              fullWidth
+              variant="outlined"  
+              style={{ flex: 1 }} 
+              margin="normal" 
+            />
+              <Button type="submit" variant="contained" color="primary" style={{marginLeft:"10px"}}>Create Graph</Button>         
+               </div>
+              <br />
+              {activities.map((activity, activityIndex) => (
+                <div key={activityIndex}>
+                  <Typography variant="h6">Activity</Typography>
+                  <TextField 
+                    label="Title" 
+                    value={activity.title} 
+                    onChange={(e) => handleActivityChange(activityIndex, 'title', e.target.value)} 
+                    variant="outlined" 
+                    fullWidth
+                    margin="normal" 
+                  />
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Pending</InputLabel>
+                    <Select
+                      value={activity.pending}
+                      onChange={(e) => handleActivityChange(activityIndex, 'pending', e.target.value)}
+                      variant="outlined"
+                    >
+                      <MenuItem value={true}>True</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField 
+                    label="Role" 
+                    value={activity.role} 
+                    onChange={(e) => handleActivityChange(activityIndex, 'role', e.target.value)} 
+                    variant="outlined" 
+                    fullWidth 
+                    margin="normal" 
+                  />
+                  <Button variant="contained" color="secondary" onClick={() => removeActivity(activityIndex)}>Remove</Button>
 
             {/* Relation Inputs */}
-            <h5>Relations</h5>
+            <Typography variant="subtitle1">Relations</Typography>
             {activity.relations.map((relation, relationIndex) => (
-              <div key={relationIndex}>
-                <label>
-                  Related Activity:
-                  <input 
-                    type="text" 
-                    value={relation.relatedActivity} 
-                    onChange={(e) => handleRelationChange(activityIndex, relationIndex, 'relatedActivity', e.target.value)} 
-                  />
-                </label>
-                <label>
-                  Type:
-                  <select
-                    value={relation.type}
-                    onChange={(e) => handleRelationChange(activityIndex, relationIndex, 'type', e.target.value)}
-                  >
-                    {relationTypes.map((type, index) => (
-                      <option key={index} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </label>
-                <button type="button" onClick={() => removeRelation(activityIndex, relationIndex)}>Remove Relation</button>
-              </div>
-            ))}
-            <button type="button" onClick={() => addRelation(activityIndex)}>Add Relation</button>
-          </div>
-        ))}
-        <button type="button" onClick={addActivity}>Add Activity</button>
-        <input type="submit" value="Create Graph"/>
+                    <div key={relationIndex}>
+                      <TextField 
+                        label="Related Activity" 
+                        value={relation.relatedActivity} 
+                        onChange={(e) => handleRelationChange(activityIndex, relationIndex, 'relatedActivity', e.target.value)} 
+                        variant="outlined" 
+                        fullWidth 
+                        margin="normal" 
+                      />
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Type</InputLabel>
+                        <Select
+                          value={relation.type}
+                          onChange={(e) => handleRelationChange(activityIndex, relationIndex, 'type', e.target.value)}
+                          variant="outlined"
+                        >
+                          {relationTypes.map((type, index) => (
+                            <MenuItem key={index} value={type}>{type}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Button variant="contained" color="secondary" style={{marginBottom:"10px"}} onClick={() => removeRelation(activityIndex, relationIndex)}>Remove Relation</Button>
+                    </div>
+                  ))}
+                  <Button variant="contained" color="primary" style={{marginBottom:"10px"}} onClick={() => addRelation(activityIndex)}>Add Relation</Button>
+                </div>
+              ))}
+              <Button variant="contained" color="primary" onClick={addActivity}>Add Activity</Button>
       </form>
-
-      <h1 className="heading">Chatbot Example</h1>
-      <h2 className="sub-heading">Create a graph from a message</h2>
-      <h3>Remember to explicitly write what you want the title and roles to be.</h3>
-      <input 
-        type="text" 
-        value={message} 
-        onChange={e => setMessage(e.target.value)} 
-        placeholder="Type your message..." 
-      />
-      <button onClick={handleCreateGraphFromMessage}>Send</button>
-      
-
-
-
-      <h1 className="heading">Chatbot</h1>
+      </Grid>
+      <Grid item>
+        <br />
+      <Typography variant="h4" style={{color: theme.palette.primary.dark}}>Create a graph from a message</Typography>
+      <Typography variant="h5" style={{color: theme.palette.primary.dark}}>Remember to indicate title and role(s)</Typography>
+      <br />
+      <form onSubmit={handleCreateGraphFromMessage}>
+      <Grid container spacing={2} alignItems="center">
+        <Grid item>
+          <TextField
+          label="Type your message..."
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          variant="outlined"
+        />
+        </Grid>
+        <Grid item>
+          <Button type="submit" variant="contained" color="primary">Send</Button>
+        </Grid>
+      </Grid>
+      </form>
+      </Grid>
+        <Grid item xs={3}>
+        <br />
+        <Typography variant="h4" style={{color: theme.palette.primary.dark}}>Ask me anything</Typography>
+        <br />
       <form onSubmit={handleSendMessage}>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -238,19 +268,26 @@ function CreateGraph() {
         </Grid>
       </Grid>
       </form>
-      
-
-
-
+      <br />
       <div>
-        <p>Bot's response:</p>
-        <p>{response}</p>
+      <Typography variant="h7" style={{color: theme.palette.primary.dark}}>{response}</Typography>
       </div>
-      <h2 className='exampleMessages'>Example messages:</h2>
+      <br />
       <Button onClick={() => { handleSendMessageFromButton('Which tasks could I add to my morning routine?'); }}>Which tasks could I add to my morning routine?</Button>
+      <br />
+      <br />
+      <Button onClick={() => { handleSendMessageFromButton('Which tasks could I add to my evening routine?'); }}>Which tasks could I add to my evening routine?</Button>
+      <br />
+      <br />
+      <Button onClick={() => { handleSendMessageFromButton('How much time should I spend outside a day?'); }}>How much time should I spend outside a day?</Button>
+      <br />
+      <br /> 
+      <Button onClick={() => { handleSendMessageFromButton('What are some chores I should do everyday?'); }}>What are some chores I should do everyday?</Button>
+      
+      </Grid>
 
-
-
+      </Grid>
+        
     </div>
     </ThemeProvider>
   );

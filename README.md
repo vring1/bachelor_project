@@ -16,11 +16,15 @@
 12. pooling
 13. Hele sessionen er baseret på den cookie og dermed behov for forskellige browsers, eftersom cookies er i hele browsersessionen (gem det som problem i opgaven)
 14. Meget volatilt at bruge CategoryId[0] = '8' uden at kende mere til DCR id-brug
+15. Everything called design (material ui) was a challenge
 
 ## TODO
 
 ### Urgent
 
+1. Lav "Role" til dropdown når man laver graf manuelt.
+1. Lav related activity til dropdown med muligheder fra andre titler...
+1. Lille kryds ud fra graferne så man kan slette dem. (Nyt api kald ...)
 1. Man skal ikke kunne have duplicate roles eller anmode om den samme flere gange
 1. Find på bedre løsning til performevent med at finde rigtige graph og sim i databasen.
 1. register skal lige give en ordentlig besked i guess
