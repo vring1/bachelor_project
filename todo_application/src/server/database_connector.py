@@ -3,10 +3,15 @@ import mysql.connector.pooling
 
 class DatabaseConnector:
     def __init__(self):
-        self.host = 'localhost'
-        self.user = 'root'
-        self.password = 'password'
-        self.database = 'todo_database'
+        #self.host = 'localhost'
+        self.host = 'mysql-datbase-todo-todo-application-bachelor.h.aivencloud.com'
+        #self.user = 'root'
+        self.user = 'avnadmin'
+        #self.password = 'password'
+        self.password = 'AVNS_-cBd5k-9zgW3gMpru1U'
+        #self.database = 'todo_database'
+        self.database = 'defaultdb'
+        self.port = 19453
         self.pool_size = 10
         self.connect()
 
@@ -19,6 +24,7 @@ class DatabaseConnector:
                 host=self.host,
                 user=self.user,
                 password=self.password,
+                port=self.port,
                 database=self.database
             )
             print("Connection pool created successfully")
@@ -35,8 +41,8 @@ class DatabaseConnector:
 
                 cursor = connection.cursor()
 
-                cursor.execute("CREATE DATABASE IF NOT EXISTS todo_database;")
-                cursor.execute("USE todo_database;")
+                #cursor.execute("CREATE DATABASE IF NOT EXISTS todo_database;")
+                #cursor.execute("USE defaultdb;")
 
                 # Create a table for storing users
                 cursor.execute("CREATE TABLE IF NOT EXISTS users ("
@@ -57,11 +63,11 @@ class DatabaseConnector:
                 #self.db.commit()
 
                 # Select all users from the table
-                cursor.execute("SELECT * FROM users;")
-                users = cursor.fetchall()
-                print("Users: ")
-                for user in users:
-                    print(user)
+                #cursor.execute("SELECT * FROM users;")
+                #users = cursor.fetchall()
+                #print("Users: ")
+                #for user in users:
+                #    print(user)
 
                 # Create a table for storing active_graph_info
                 cursor.execute("CREATE TABLE IF NOT EXISTS active_graph_info ("
@@ -80,11 +86,11 @@ class DatabaseConnector:
                 #self.db.commit()
 
                 # Select all graphs from the table
-                cursor.execute("SELECT * FROM active_graph_info;")
-                graphs = cursor.fetchall()
-                print("Active graphs info: ")
-                for graph in graphs:
-                    print(graph)
+                #cursor.execute("SELECT * FROM active_graph_info;")
+                #graphs = cursor.fetchall()
+                #print("Active graphs info: ")
+                #for graph in graphs:
+                #    print(graph)
 
                 # Create a table for storing requests
                 cursor.execute("CREATE TABLE IF NOT EXISTS role_requests ("
@@ -101,11 +107,11 @@ class DatabaseConnector:
                 #self.cursor.execute("DELETE FROM requests;")
                 #self.db.commit()
 
-                cursor.execute("SELECT * FROM role_requests;")
-                requests = cursor.fetchall()
-                print("Requests: ")
-                for req in requests:
-                    print(req)
+                #cursor.execute("SELECT * FROM role_requests;")
+                #requests = cursor.fetchall()
+                #print("Requests: ")
+                #for req in requests:
+                #    print(req)
 
 
                 # Create a table for storing roles with their users
@@ -121,11 +127,11 @@ class DatabaseConnector:
                 #self.cursor.execute("DELETE FROM roles;")
                 #self.db.commit()
 
-                cursor.execute("SELECT * FROM roles;")
-                roles = cursor.fetchall()
-                print("Roles: ")
-                for role in roles:
-                    print(role)
+                #cursor.execute("SELECT * FROM roles;")
+                #roles = cursor.fetchall()
+                #print("Roles: ")
+                #for role in roles:
+                #    print(role)
 
                 # show tables
                 #self.cursor.execute("SHOW TABLES;")

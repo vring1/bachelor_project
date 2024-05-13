@@ -94,20 +94,20 @@ function CreateGraph() {
 
       
 
-    fetch('http://localhost:5000/createGraph', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('session_token')}`
-      },
-      body: JSON.stringify(graphData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => console.error(error));
+  fetch('http://localhost:5000/createGraph', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${sessionStorage.getItem('session_token')}`
+    },
+    body: JSON.stringify(graphData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => console.error(error));
   };
 
   const handleCreateGraphFromMessage = (e) => {
@@ -283,9 +283,7 @@ function CreateGraph() {
       <br />
       <br /> 
       <Button onClick={() => { handleSendMessageFromButton('What are some chores I should do everyday?'); }}>What are some chores I should do everyday?</Button>
-      
       </Grid>
-
       </Grid>
         
     </div>

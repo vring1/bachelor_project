@@ -20,6 +20,13 @@
 
 ## TODO
 
+### Fix
+
+1. Sæt generate XML ud..
+2. Fjern print - og erstat med error handling..
+3. Fjern consolog logs
+4. lav liste af brugere, der er admin der kan loades ind istedet
+
 ### Urgent
 
 1. TESTING :/
@@ -229,6 +236,4 @@ const graphData =
 ]
 }
 
-Now, please convert the text sent to you in the next message into activities with relations to eachother and give me them in the same format as from react. Also, please ONLY send the json and not eny other text!
-
-"The title should be Sej Graf and the role is Valdemar. When I wake up i need to brush my teeth and then drink some water. Then I either have to pee or go for a run, which then makes me need to take a shower."
+Now, please convert the text sent to you in the next message into activities with relations to eachother and give me them in the same format as from react. Also, please ONLY send the json and not any other text!

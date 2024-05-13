@@ -348,15 +348,14 @@ def test_if_user_exists_in_dcr_and_add_to_database(): # Register
         return jsonify(None)
     return jsonify({'graphs': graphs})
 
-@app.route('/testIfUserExistsInDatabase', methods=['POST']) #generate session token
-def test_if_user_exists_in_database(): # Login
+@app.route('/testIfUserExistsInDatabase', methods=['POST']) 
+def test_if_user_exists_in_database(): 
     data = request.json
     username = data['username']
     password = data['password']
     user, session_token = data_fetcher.test_if_user_and_password_exists_in_database(username, password)
     if user is None:
         return jsonify(None)
-    #return jsonify({'user': user, 'session_token': session_token})
     return jsonify({'user': user, 'session_token': session_token})
 
 
