@@ -42,7 +42,7 @@ class DataFetcher:
     def test_if_user_exists_in_dcr_and_add_to_database(self):
         username = request.args.get('username')
         password = request.args.get('password')
-        if username == "valdemarring1@gmail.com":
+        if username == "valdemarring1@gmail.com" or username=="dcrtestmail1@gmail.com":
             admin = True
         else:
             admin = False
@@ -109,9 +109,7 @@ class DataFetcher:
 
         # Translate XML to JSON dictionary
         events_json = xmltodict.parse(events_xml_clean)
-
-        #print(events_json)
-    
+            
         # find role of user in database
         role = self.execute_query("SELECT current_role FROM users WHERE username = %s;", (username,))[0][0]
         print("Role in fetch data!: ", role)
