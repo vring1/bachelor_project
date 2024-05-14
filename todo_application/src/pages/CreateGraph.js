@@ -8,26 +8,21 @@ function CreateGraph() {
   const [activities, setActivities] = useState([]);
   const [graphTitle, setGraphTitle] = useState(''); 
 
-  // Relation types options
   const relationTypes = ['Condition', 'Response', 'Include', 'Exclude', 'Milestone', 'Spawn'];
-  const [message, setMessage] = useState(''); // Message state for chatGPT
+  const [message, setMessage] = useState(''); 
 
 
-  const [messageChat, setMessageChat] = useState(''); // Message state for chatGPT
-  const [response, setResponse] = useState(''); // Response state for chatGPT
+  const [messageChat, setMessageChat] = useState(''); 
+  const [response, setResponse] = useState(''); 
 
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    // Check if user is logged in
     const sessionToken = sessionStorage.getItem('session_token');
     if (!sessionToken) {
-      // If not logged in, redirect to login page
       navigate('/');
     }
-  }, [navigate]); // Dependency array to ensure useEffect runs only once
-
-  // Function to add a new activity to the list
+  }, [navigate]); 
   const addActivity = () => {
     setActivities([...activities, { 
       title: '', 
@@ -37,49 +32,42 @@ function CreateGraph() {
     }]);
   };
 
-  // Function to handle changes in activity properties
   const handleActivityChange = (index, field, value) => {
     const updatedActivities = [...activities];
     updatedActivities[index][field] = value;
     setActivities(updatedActivities);
   };
 
-  // Function to add a relation for an activity
   const addRelation = (index) => {
     const updatedActivities = [...activities];
     updatedActivities[index].relations.push({ relatedActivity: '', type: relationTypes[0] });
     setActivities(updatedActivities);
   };
 
-  // Function to handle changes in relation properties
   const handleRelationChange = (activityIndex, relationIndex, field, value) => {
     const updatedActivities = [...activities];
     updatedActivities[activityIndex].relations[relationIndex][field] = value;
     setActivities(updatedActivities);
   };
 
-  // Function to remove a relation from an activity
   const removeRelation = (activityIndex, relationIndex) => {
     const updatedActivities = [...activities];
     updatedActivities[activityIndex].relations.splice(relationIndex, 1);
     setActivities(updatedActivities);
   };
 
-  // Function to remove an activity from the list
   const removeActivity = (index) => {
     const updatedActivities = [...activities];
     updatedActivities.splice(index, 1);
     setActivities(updatedActivities);
   };
 
-  // Function to create a new graph
   const createGraph = (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); 
 
-    // Ask for confirmation
     const confirmed = window.confirm("Are you sure you want to submit the graph?");
     if (!confirmed) {
-      return; // Don't proceed if not confirmed
+      return;
     }
 
     const graphData = {
@@ -111,24 +99,24 @@ function CreateGraph() {
   };
 
   const handleCreateGraphFromMessage = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    createGraphFromMessage(message); // Call sendMessage function from imported chatbot functions
+    e.preventDefault(); 
+    createGraphFromMessage(message);
     setMessage('');
   };
 
   const handleSendMessage = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    sendMessage(messageChat, setResponse); // Call sendMessage function from imported chatbot functions
+    e.preventDefault(); 
+    sendMessage(messageChat, setResponse); 
     setMessageChat('');
   };
 
   const handleSendMessageFromButton = (msg) => {
-    sendMessageFromButton(msg, setResponse); // Call sendMessageFromButton function from imported chatbot functions
+    sendMessageFromButton(msg, setResponse); 
   };
   
   const theme = createTheme({
     palette: {
-      mode: 'dark', // Dark grey color
+      mode: 'dark',
     },
   });
 

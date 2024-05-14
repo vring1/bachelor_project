@@ -131,12 +131,7 @@ class DataFetcher:
 
 
     def perform_event(self, event_id, username, password):
-        # get newest graph_id and simulation_id from database, that is connected to the user
         graph_id, simulation_id = self.execute_query("SELECT graph_id, simulation_id FROM active_graph_info WHERE username = %s ORDER BY id DESC LIMIT 1;", (username,))[0]
-        #graph_id, simulation_id = self.execute_query("SELECT graph_id, simulation_id FROM active_graph_info WHERE username = %s;", (username,))[0]
-        print("Graph id: ", graph_id)
-        print("Simulation id: ", simulation_id)
-        print('Performing event')
 
         url = (f"https://repository.dcrgraphs.net/api/graphs/{graph_id}/sims/"
             f"{simulation_id}/events/{event_id}")

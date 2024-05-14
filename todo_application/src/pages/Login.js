@@ -6,9 +6,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState(''); // State for role
-  const [errorMessage, setErrorMessage] = useState(''); // State to store error message
-  const navigate = useNavigate(); // Get navigate function
+  const [role, setRole] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const navigate = useNavigate(); 
 
 
   const redirectToHome = (e) => {
@@ -42,13 +42,12 @@ function Login() {
   }
   const theme = createTheme({
     palette: {
-      mode: 'dark', // Dark grey color
+      mode: 'dark', 
     },
   });
   return (
     <ThemeProvider theme={theme}>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        {/* Centered login form */}
         <form onSubmit={redirectToHome} style={{ width: '300px' }}>
           <TextField
             label="Username"

@@ -2,53 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import './../App.css';
-import { sendMessage, sendMessageFromButton } from '../components/home/ChatFunctions'; // Import chatbot functions
-import { fetchFromServer, fetchGraphs, performEvent, clearEvents } from '../components/home/GraphFunctions'; // Import server functions
+import { fetchFromServer, fetchGraphs, performEvent, clearEvents } from '../components/home/GraphFunctions'; 
 import { Button, TextField, Select, MenuItem, Grid, Typography, List, ListItem } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 function Home() {
-  const [fetchedData, setFetchedData] = useState([]); // State to store fetched events
-  const [fetchedGraphs, setFetchedGraphs] = useState([]); // State to store fetched graphs
+  const [fetchedData, setFetchedData] = useState([]); 
+  const [fetchedGraphs, setFetchedGraphs] = useState([]); 
 
   
 
 
-  const [isAdmin, setIsAdmin] = useState(false); // State to store admin status
-  const [requests, setRequests] = useState([]); // State to store role requests
+  const [isAdmin, setIsAdmin] = useState(false); 
+  const [requests, setRequests] = useState([]); 
 
-  const [roles, setRoles] = useState([]); // State to store roles
-  const [selectedRole, setSelectedRole] = useState(''); // State to store selected role
+  const [roles, setRoles] = useState([]); 
+  const [selectedRole, setSelectedRole] = useState(''); 
 
-  const [checkAdminInterval, setCheckAdminInterval] = useState(false); // State to track admin status
+  const [checkAdminInterval, setCheckAdminInterval] = useState(false); 
 
-  const [initialRoleSelected, setInitialRoleSelected] = useState(false); // State to track initial role selection
+  const [initialRoleSelected, setInitialRoleSelected] = useState(false); 
 
-  const [checkSendSelectedRoleInterval, setCheckSendSelectedRoleInterval] = useState(false); // State to track sending selected role
+  const [checkSendSelectedRoleInterval, setCheckSendSelectedRoleInterval] = useState(false);
 
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    // Check if user is logged in
     const sessionToken = sessionStorage.getItem('session_token');
     if (!sessionToken) {
-      // If not logged in, redirect to login page
       navigate('/');
     }
-  }, [navigate]); // Dependency array to ensure useEffect runs only once
+  }, [navigate]); 
 
 
-  // Check if user is admin on component mount
   useEffect(() => {
-    setCheckAdminInterval(true); // Set to true when the component mounts
+    setCheckAdminInterval(true);
     return () => {
       setCheckAdminInterval(false);
     };
   }, []);
 
   useEffect(() => {
-    setCheckSendSelectedRoleInterval(true); // Set to true when the component mounts
+    setCheckSendSelectedRoleInterval(true);
     return () => {
       setCheckSendSelectedRoleInterval(false);
     };
@@ -56,13 +52,13 @@ function Home() {
 
   useEffect(() => {
     if (checkAdminInterval) {
-      fetchRolesForUser(); // Call checkIfAdmin when the component mounts
+      fetchRolesForUser();
       sendSelectedRole(selectedRole);
       handleFetchGraphs();
       checkIfAdmin();
     
       const interval = setInterval(() => {
-        checkIfAdmin(); // Call checkIfAdmin every 5 seconds
+        checkIfAdmin();
         fetchRolesForUser();
       }, 5000);
       return () => clearInterval(interval);
@@ -86,13 +82,12 @@ function Home() {
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            //'Cookie': document.cookie // Send the entire cookie value
             'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
         }
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data); // Log the response for debugging
+        console.log(data); 
         if (data.admin) {
             console.log('User is admin');
             setIsAdmin(true);
@@ -107,15 +102,14 @@ function Home() {
 
   
 
-  // Function to fetch role requests from the server
   const fetchRoleRequests = () => {
     fetch('http://localhost:5000/fetchRoleRequests')
       .then(response => response.json())
       .then(data => {
-        console.log(data); // Log the response for debugging
+        console.log(data);
         if (data.requests) {
           console.log('Requests fetched successfully');
-          setRequests(data.requests); // Update state with fetched role requests
+          setRequests(data.requests); 
           console.log('Requests:', requests);
         } else {
           console.log('No requests found');
@@ -210,20 +204,19 @@ function Home() {
   };
   
   const requestRole = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    const role = e.target.role.value; // Extract role from the form
-    e.target.role.value = ''; // Clear the role submit field
+    e.preventDefault();
+    const role = e.target.role.value; 
+    e.target.role.value = ''; 
     console.log("Role: ", role);
     console.log("Document cookie: ", document.cookie);
     fetch('http://localhost:5000/requestRole', {
-      method: 'POST', // Use POST method
+      method: 'POST', 
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json', // Specify content type as JSON
-        //'Cookie': document.cookie // Send cookies with the request
+        'Content-Type': 'application/json', 
         'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
       },
-      body: JSON.stringify({ role: role }) // Send role in the request body
+      body: JSON.stringify({ role: role }) 
     })
     .then(response => response.json())
     .then(data => {
@@ -251,14 +244,14 @@ function Home() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data); // Log the response for debugging
+        console.log(data); 
         if (data.roles) {
             console.log('Roles fetched successfully');
-            setRoles(data.roles); // Update state with fetched roles
+            setRoles(data.roles);
             console.log('Roles:', roles);
             if (!initialRoleSelected && data.roles.length > 0) {
                 setSelectedRole(data.roles[0]);
-                setInitialRoleSelected(true); // Set initial role selection state
+                setInitialRoleSelected(true);
             }
         } else {
             console.log('No roles found');
@@ -277,7 +270,6 @@ function Home() {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          //'Cookie': document.cookie // Send cookies with the request
           'Authorization' : `Bearer ${sessionStorage.getItem('session_token')}`
         },
         body: JSON.stringify({ role: role })
@@ -310,7 +302,7 @@ function Home() {
 
   const theme = createTheme({
     palette: {
-      mode: 'dark', // Dark grey color
+      mode: 'dark', 
     },
   });
   
@@ -324,7 +316,6 @@ function Home() {
           </Link>
           </Grid>
           <Grid item>
-            {/* Grid container for Log out and Create a new graph buttons */}
             <Grid container justifyContent="flex-end" spacing={2}>
               <Grid item>
                 <Link to="/creategraph">
@@ -370,7 +361,6 @@ function Home() {
           </Grid>
         </Grid>
         <Grid container alignItems="flex-start" spacing={8} justifyContent="space-between">
-          {/* Grid item for fetched graphs */}
           <Grid item xs={4}>
             <div>
               {fetchedGraphs.map((graph, index) => (

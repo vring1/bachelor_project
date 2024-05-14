@@ -53,8 +53,6 @@ def chat_graph_creator():
             "dcrsopCategory": "8888",
             "title": title
         }
-
-        # Retrieve a dictionary of each activity with its label and role and its relation to other activities
         
         try:
             # Make a POST request to create a new graph
@@ -72,7 +70,6 @@ def chat_graph_creator():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    # Extract the message content from the client request
     message = request.json['message']
     if message: 
         chat_handler.messages.append( 
@@ -85,15 +82,12 @@ def chat():
         raise ValueError("Message is empty")
     
     reply = chat.choices[0].message.content 
-    # Return the response back to the client
     return jsonify({'response': reply})
 
 @app.route('/fetchGraphsAfterLogin', methods=['GET'])
 def fetch_graphs_after_login():
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
     print("Session token fetch graphs after login: ", session_token)
-    #print("fetch_graphs_after_login COOKIE: ",request.headers.get('Cookie'))
-    #session_token = request.headers.get('Cookie').split('=')[1]
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         username = user[0][1]
@@ -313,7 +307,7 @@ def create_graph():
         username = user[0][1]
         password = user[0][2]
         print("User: ", user)
-        activities_data = request.json #.activities eller giv activities_data['activities'] som argument
+        activities_data = request.json
         title = activities_data['title']
         
         print("Graph data: ", activities_data)
@@ -325,8 +319,6 @@ def create_graph():
             "dcrsopCategory": "8888",
             "title": title
         }
-
-        # Retrieve a dictionary of each activity with its label and role and its relation to other activities
         
         try:
             # Make a POST request to create a new graph
@@ -384,7 +376,6 @@ def delete_graph():
 @app.route('/fetchData', methods=['GET'])
 def fetch_data():
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
-    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token fetchdata: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
@@ -392,7 +383,6 @@ def fetch_data():
         password = user[0][2]
         print("User: ", user)
         labels = data_fetcher.fetch_data(username, password)
-    #labels = data_fetcher.fetch_data()
     except Exception as e:
         print("Error: ", e)
         return None
@@ -401,7 +391,6 @@ def fetch_data():
 @app.route('/performEvent', methods=['POST'])
 def perform_event():
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
-    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token perform event: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
@@ -420,14 +409,12 @@ def perform_event():
 def perform_graph_event():
     event_id = request.json['event_id']
     graph_id = request.json['graph_id']
-    #data_fetcher.graph_id = graph_id
     labels = data_fetcher.perform_event(event_id)
     return jsonify({'labels': labels})
 
 @app.route('/requestRole', methods=['POST'])
 def request_role():
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
-    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token request role: ", session_token)
     role = request.json['role']
     # find user from session token
@@ -439,7 +426,6 @@ def request_role():
         try:
             # Add role request to database, but only if the user has not already requested that specific role
             req = data_fetcher.execute_query("SELECT * FROM role_requests WHERE username = %s AND role = %s;", (username, role))
-            #print("Request: ", request)
             if req:
                 print("User has already requested that role")
             else:
@@ -457,7 +443,6 @@ def request_role():
 @app.route('/checkIfAdmin', methods=['GET'])
 def check_if_admin():
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
-    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token check if admin: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
@@ -527,12 +512,10 @@ def deny_role_request():
 @app.route('/fetchRolesForUser', methods=['GET'])
 def fetch_roles_for_user():
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
-    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token fetch roles for user: ", session_token)
     try:
         user = data_fetcher.execute_query("SELECT * FROM users WHERE session_token = %s;", (session_token,))
         username = user[0][1]
-        # Query roles associated with the provided username
         roles = data_fetcher.execute_query("SELECT role FROM roles WHERE username = %s;", (username,))
         roles = [row[0] for row in roles] if roles else []
         return jsonify({'roles': roles}), 200
@@ -547,7 +530,6 @@ def set_current_role():
     print("ROLE FROM REQUEST: ", role)
     # set role in user table
     session_token = request.headers.get('Authorization').split('Bearer ')[1]
-    #session_token = request.headers.get('Cookie').split('=')[1]
     print("Session token set current role: ", session_token)
     try:
         print("ROLE FROM REQUEST 2: ", role)

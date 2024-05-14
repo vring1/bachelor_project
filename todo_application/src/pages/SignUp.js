@@ -1,38 +1,38 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 import { Button, TextField, Select, MenuItem, Grid, Typography, List, ListItem } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function SignUp() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // State to store error message
-  const navigate = useNavigate(); // Get navigate function
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const navigate = useNavigate(); 
 
   const fetchGraphs = (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); 
     fetch(`http://localhost:5000/testIfUserExistsInDcrAndAddToDatabase?username=${username}&password=${password}`)//&role=${role}`)
       .then(response => response.json())
       .then(data => {
         if (data === null) {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
         } else if (data.graphs) {
-          navigate('/'); // Redirect to / upon successful registration
+          navigate('/'); 
         } 
         else {
           setErrorMessage('User does not exist or password is wrong. Use same login details as on dcrgraphs.net'); // Set appropriate error message
         }
-        setUsername(''); // Clear username
-        setPassword(''); // Clear password
+        setUsername(''); 
+        setPassword('');
       })
       .catch(error => {
         console.error(error);
-        setErrorMessage('An error occurred. Please try again later.'); // Set error message
+        setErrorMessage('An error occurred. Please try again later.'); 
       });
   }
   const theme = createTheme({
     palette: {
-      mode: 'dark', // Dark grey color
+      mode: 'dark', 
     },
   });
   return (
