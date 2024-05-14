@@ -100,10 +100,12 @@ def fetch_graphs_after_login():
         password = user[0][2]
         print("User: ", user)
         graphs = data_fetcher.fetch_graphs_after_login(username, password)
+        print("Graphs: ", graphs)
         if graphs is None:
             return jsonify(None)
         filtered_graphs = [graph for graph in graphs if
                             graph['@CategoryId'][0] == '8'
+                            or graph['@CategoryId'][0] == '9'
                            ]
         
     except Exception as e:
