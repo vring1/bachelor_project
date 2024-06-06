@@ -2,13 +2,13 @@ import openai
 
 class ChatHandler:
     def __init__(self):
-        openai.api_key = open('api_key.txt', 'r').read().strip('\n')
+        openai.api_key = open('../../../api_key.txt', 'r').read().strip('\n')
         self.messages = [{"role": "system", "content": "You are an intelligent assistant providing advice on tasks for morning routines, evening routines, or general tasks. Feel free to ask for recommendations!"}]
 
 
 class GraphCreator:
     def __init__(self):
-        openai.api_key = open('api_key.txt', 'r').read().strip('\n')
+        openai.api_key = open('../../../api_key.txt', 'r').read().strip('\n')
         self.messages = [{"role": "system", "content": "Hello. I need you to help me create a graph in DCR. They consist of activities and relations between the activities."+
                           "Here's a list of the relations:" +
                             "1. Condition: A condition between two activities ensures that the second activity cannot be executed unless the first is excluded or has been executed at least once." +

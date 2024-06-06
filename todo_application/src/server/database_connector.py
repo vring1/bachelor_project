@@ -3,14 +3,15 @@ import mysql.connector.pooling
 
 class DatabaseConnector:
     def __init__(self):
-        #self.host = 'localhost'
         self.host = 'mysql-datbase-todo-todo-application-bachelor.h.aivencloud.com'
-        #self.user = 'root'
         self.user = 'avnadmin'
-        #self.password = 'password'
-        self.password = 'AVNS_-cBd5k-9zgW3gMpru1U'
-        #self.database = 'todo_database'
+        self.password = open('../../../password.txt', 'r').read().strip('\n')
         self.database = 'defaultdb'
+
+        #self.host = 'localhost'
+        #self.user = 'root'
+        #self.password = 'password'
+        #self.database = 'todo_database'
         self.port = 19453
         self.pool_size = 10
         self.connect()
